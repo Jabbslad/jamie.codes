@@ -20,8 +20,8 @@ template = "homepage.html"
 </style>
 
 <div class="homepage-hero">
-    <h1 class="homepage-hero-title">Apollo</h1>
-    <p class="homepage-hero-subtitle">A modern and minimalistic blog theme powered by Zola.!</p>
+    <h1 class="homepage-hero-title">Jamie Codes</h1>
+    <p class="homepage-hero-subtitle">Musings of a Software Engineer.</p>
 </div>
 
 # Features
