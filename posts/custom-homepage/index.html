@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="base" content="https:&#x2F;&#x2F;jamie.codes" />
+
+    
+
+    
+
+    
+    
+    
+        <title>
+            
+                Creating a Custom Homepage
+            
+        </title>
+
+        
+            <meta property="og:title"
+                  content="Creating a Custom Homepage" />
+        
+    
+
+    
+        
+            <meta property="og:description" content="Musings of a software engineer" />
+        
+    
+
+    
+        
+            <meta name="description" content="Musings of a software engineer" />
+        
+    
+
+    
+    
+
+    
+    
+        <link href=https://jamie.codes/fonts.css rel="stylesheet" />
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+
+    
+    
+
+
+    
+    
+        <link rel="stylesheet"
+              type="text/css"
+              href="https://jamie.codes/theme/light.css" />
+        <link id="darkModeStyle"
+              rel="stylesheet"
+              type="text/css"
+              href="https://jamie.codes/theme/dark.css" />
+    
+
+    <!-- Set the correct theme in the script -->
+
+    
+        <script src=https://jamie.codes/js/themetoggle.js></script>
+
+        
+            <script>
+                setTheme(getSavedTheme());
+            </script>
+        
+    
+
+
+    <link rel="stylesheet"
+          type="text/css"
+          media="screen"
+          href="https://jamie.codes/main.css" />
+
+    
+
+    <script defer
+                    src="https://jamie.codes/search_index.en.js?h=3f005a3f33deb92e8ed0"></script>
+        <script defer
+                src="https://jamie.codes/js/searchElasticlunr.min.js?h=3626c0ef99daa745b31e"></script></head>
+
+
+    <body>
+        <div class="left-content">
+            
+            
+        </div>
+
+        <div class="content">
+            <nav>
+    <div class="left-nav">
+        
+            <a href=https:&#x2F;&#x2F;jamie.codes>Jamie Codes</a>
+        
+
+
+        <div class="socials">
+            
+                
+            
+            
+                <a rel='me' href="https:&#x2F;&#x2F;twitter.com&#x2F;jabbslad" class="social">
+                    <img alt="twitter"
+                         src="https://jamie.codes/icons/social/twitter.svg" />
+                </a>
+            
+                <a rel='me' href="https:&#x2F;&#x2F;github.com&#x2F;jabbslad&#x2F;" class="social">
+                    <img alt="github"
+                         src="https://jamie.codes/icons/social/github.svg" />
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            <a href=https://jamie.codes/posts style="margin-right: 0.5em">&#x2F;posts</a>
+        
+            <a href=https://jamie.codes/projects style="margin-right: 0.5em">&#x2F;projects</a>
+        
+            <a href=https://jamie.codes/about style="margin-right: 0.5em">&#x2F;about</a>
+        
+            <a href=https://jamie.codes/tags style="margin-right: 0.5em">&#x2F;tags</a>
+        
+
+        
+            <button id="search-button"
+                    class="search-button"
+                    title="$SHORTCUT to open search">
+                <img src="https://jamie.codes/icons/search.svg"
+                     alt="Search"
+                     class="search-icon" />
+            </button>
+
+            <div id="searchModal"
+                 class="search-modal js"
+                 role="dialog"
+                 aria-labelledby="modalTitle">
+                <div id="modal-content">
+                    <h1 id="modalTitle" class="page-header">
+                        Search
+                    </h1>
+                    <div id="searchBar">
+                        <input id="searchInput"
+                               role="combobox"
+                               autocomplete="off"
+                               spellcheck="false"
+                               aria-expanded="false"
+                               aria-controls="results-container"
+                               placeholder="Search..." />
+                        <button id="clear-search" class="clear-button" title="Clear search">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="results-container">
+                        <div id="results-info">
+                            <span id="zero_results" style="display: none;">No results</span>
+                            <span id="one_result" style="display: none;">1 result</span>
+                            <span id="many_results" style="display: none;">$NUMBER results</span>
+                        </div>
+                        <div id="results" role="listbox">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+
+        
+            <a id="dark-mode-toggle"
+               onclick="toggleTheme(); event.preventDefault();"
+               href="#">
+                <img src="https://jamie.codes/icons/sun.svg" id="sun-icon" alt="Light" />
+                <img src="https://jamie.codes/icons/moon.svg"
+                     id="moon-icon"
+                     style="filter: invert(1)"
+                     alt="Dark" />
+                <img src="https://jamie.codes/icons/auto.svg"
+                     id="auto-icon"
+                     style="filter: invert(1)"
+                     alt="Auto" />
+            </a>
+
+            <!-- Initialize the theme toggle icons -->
+            <script>
+                updateItemToggleTheme()
+            </script>
+        
+    </div>
+</nav>
+
+
+            
+            
+    
+    <div class="visible-element-observer-root" data-selector="main article p">
+        <main>
+            <article>
+                <div class="title">
+                    
+                    
+    
+        <div class="page-header">
+            Creating a Custom Homepage
+        </div>
+    
+
+
+                    <div class="meta">
+                        
+                            Posted on <time>2025-06-29</time>
+                        
+
+
+                        
+
+                        
+
+                        
+
+                        
+                        
+
+                        
+                        
+
+                        
+                        
+
+                        
+
+                    </div>
+                </div>
+
+                
+
+                <section class="body">
+                    <p>The Apollo theme provides a default homepage that lists your recent blog posts. However, you might want to create a custom homepage that better reflects your personality and work. This guide will walk you through the process of creating a custom homepage with the Apollo theme.</p>
+<h2 id="1-create-a-custom-homepage-template"><a class="zola-anchor" href="#1-create-a-custom-homepage-template" aria-label="Anchor link for: 1-create-a-custom-homepage-template">1. Create a Custom Homepage Template</a></h2>
+<p>The first step is to create a custom homepage template. In the root of your Zola project, create a new file at <code>templates/home.html</code>. This file will contain the HTML for your custom homepage.</p>
+<p>You can use the following code as a starting point:</p>
+<pre><code data-lang="html">{% extends &quot;base.html&quot; %}
+
+{% block main_content %}
+    &lt;main&gt;
+        &lt;article&gt;
+            &lt;section class=&quot;body&quot;&gt;
+                &lt;h1&gt;Welcome to my custom homepage!&lt;/h1&gt;
+                &lt;p&gt;This is where you can introduce yourself and your work.&lt;/p&gt;
+            &lt;/section&gt;
+        &lt;/article&gt;
+    &lt;/main&gt;
+{% endblock main_content %}
+</code></pre>
+<p>This template extends the theme's <code>base.html</code> template and overrides the <code>main_content</code> block with your own content.</p>
+<h2 id="2-set-the-homepage-template"><a class="zola-anchor" href="#2-set-the-homepage-template" aria-label="Anchor link for: 2-set-the-homepage-template">2. Set the Homepage Template</a></h2>
+<p>Next, you need to tell Zola to use your custom homepage template. In the <code>content</code> directory of your Zola project, you should have a <code>_index.md</code> file. If you don't have one, create one.</p>
+<p>In this file, add the following front matter:</p>
+<pre><code data-lang="toml">+++
+template = &quot;home.html&quot;
++++
+</code></pre>
+<p>This tells Zola to use the <code>templates/home.html</code> file to render your homepage.</p>
+<h2 id="3-add-content-to-your-homepage"><a class="zola-anchor" href="#3-add-content-to-your-homepage" aria-label="Anchor link for: 3-add-content-to-your-homepage">3. Add Content to Your Homepage</a></h2>
+<p>Now you can add content to your homepage. The content of the <code>content/_index.md</code> file will be available in your <code>templates/home.html</code> template as the <code>section</code> variable.</p>
+<p>For example, you can add a title and some introductory text to your <code>content/_index.md</code> file:</p>
+<pre><code data-lang="toml">+++
+title = &quot;Hey there! 👋🏼&quot;
+template = &quot;home.html&quot;
++++
+
+I&#39;m a software engineer who loves to write about technology and programming.
+</code></pre>
+<p>You can then display this content in your <code>templates/home.html</code> template:</p>
+<pre><code data-lang="html">{% extends &quot;base.html&quot; %}
+
+{% macro home_page(section) %}
+    &lt;main&gt;
+        &lt;article&gt;
+            &lt;section class=&quot;body&quot;&gt;
+                {{ post_macros::page_header(title=section.title) }}
+                {{ section.content | safe }}
+            &lt;/section&gt;
+        &lt;/article&gt;
+    &lt;/main&gt;
+{% endmacro home_page %}
+
+{% block main_content %}
+    {{ self::home_page(section=section) }}
+{% endblock main_content %}
+</code></pre>
+<h2 id="4-displaying-posts"><a class="zola-anchor" href="#4-displaying-posts" aria-label="Anchor link for: 4-displaying-posts">4. Displaying Posts</a></h2>
+<p>You can also display a list of your recent posts on your homepage. The following code shows how to display the 5 most recent posts:</p>
+<pre><code data-lang="html">{% extends &quot;base.html&quot; %}
+
+{% macro home_page(section) %}
+    &lt;main&gt;
+        &lt;article&gt;
+            &lt;section class=&quot;body&quot;&gt;
+                {{ post_macros::page_header(title=section.title) }}
+                {{ section.content | safe }}
+            &lt;/section&gt;
+        &lt;/article&gt;
+    &lt;/main&gt;
+{% endmacro home_page %}
+
+{% block main_content %}
+    {{ self::home_page(section=section) }}
+
+    &lt;h1&gt;Recent articles&lt;/h1&gt;
+    &lt;main class=&quot;post-list&quot;&gt;
+        {% set section = get_section(path=&quot;posts/_index.md&quot;) %}
+        {{ post_macros::list_posts(pages=section.pages | slice(end=5)) }}
+    &lt;/main&gt;
+{% endblock main_content %}
+</code></pre>
+<p>This code gets the <code>posts</code> section and then uses the <code>post_macros::list_posts</code> macro to display the 5 most recent posts.</p>
+<p>You can also highlight specific posts by getting them by their path:</p>
+<pre><code data-lang="html">{% set highlights = [
+    get_page(path=&quot;posts/my-first-post.md&quot;),
+    get_page(path=&quot;posts/my-second-post.md&quot;),
+] %}
+&lt;main class=&quot;post-list&quot;&gt;
+    {{ post_macros::list_posts(pages=highlights) }}
+&lt;/main&gt;
+</code></pre>
+<p>This is just a starting point. You can customize your homepage as much as you want.</p>
+
+                </section>
+            </article>
+        </main>
+    </div>
+
+
+
+            
+                
+            
+
+            
+        </div>
+
+        <div class="right-content">
+            
+    
+    
+
+        </div>
+    </body>
+
+</html>
