@@ -1,7 +1,7 @@
 +++
-title = "How Boris Cherny's Team Uses Claude Code to Build Claude Code"
+title = "Steal Boris Cherny's Claude Code Workflow"
 date = "2026-03-29"
-description = "Around 90% of Claude Code is written by Claude Code itself. How Boris Cherny's team at Anthropic built a billion-dollar product using the tool it ships."
+description = "Boris Cherny ships 10-30 PRs a day using Claude Code. Here's exactly how he does it — and how you can too."
 tags = ["ai", "engineering", "developer-tools", "anthropic"]
 
 [extra]
@@ -10,103 +10,81 @@ hero_image = "/images/claude-code-builds-claude-code-hero.png"
 hero_image_alt = "A surreal panoramic landscape with enormous floating orbs above ancient architecture, evoking recursive creation"
 +++
 
-Boris Cherny hasn't written a line of code by hand since November 2025. Not because he can't — he was a Principal Engineer at Instagram — but because the tool his team builds writes it for him. That tool is Claude Code, and about 90% of it was written by itself.
+Boris Cherny created Claude Code and hasn't written a line of code by hand since November 2025. He ships 10-30 PRs a day. In one 30-day stretch: 259 PRs, 497 commits, 325 million tokens across 1,600 sessions.
 
-What started as a side project in his first month at Anthropic has become a product responsible for 4% of all public GitHub commits and over a billion dollars in annual recurring revenue. This is the story of how it's built.
+Here's the workflow behind those numbers — and how to apply it yourself.
 
 <!-- more -->
 
-## A rejected PR and a bash script
+## The core loop: plan first, then let it rip
 
-Boris arrived at Anthropic in September 2024 fresh from five years at Meta. He submitted his first pull request. It was rejected — not for any technical reason, but because he'd written it by hand. His ramp-up buddy Adam Wolf looked at it and said: *"You wrote this by hand. What are you doing?"*
+Boris starts **80% of tasks in Plan Mode** (Shift+Tab twice). He iterates on the plan until it's solid, then switches to auto-accept and lets Claude one-shot the implementation.
 
-Point taken.
+> "Once there is a good plan, it will one-shot the implementation almost every time." — [Lenny's Podcast](https://www.lennysnewsletter.com/)
 
-Within weeks, Boris had a prototype: a terminal tool wired up to Claude 3.6. The first version was whimsical — it could use AppleScript to tell him what song was playing. But after a conversation with Cat Wu (who'd go on to become the product's founding PM), he gave it filesystem access and a bash shell. That's when things got interesting.
+That's the entire inner loop. Plan, accept, ship. No hand-editing.
 
-"I ran it in our codebase, and Claude started exploring the filesystem — reading one file, looking at the imports, then reading the files defined in those imports," Boris [recalled on The Pragmatic Engineer podcast](https://www.pragmaticengineer.com/). He saw what he calls **"product overhang"** — the model was already far more capable than any product was letting it be.
+**How to apply this:** Resist the urge to jump straight into coding. Spend the time upfront getting the plan right. A good plan in Plan Mode is worth more than an hour of back-and-forth corrections.
 
-Sid Bidasaria joined as engineer #2 in November and built the subagents feature in three days. They shipped an internal dogfooding version that same month. Day one: 20% of Anthropic's engineers were using it. Day five: 50%.
+## Run agents in parallel
 
-The team debated whether to keep Claude Code as an internal advantage or ship it publicly. They shipped it — because Anthropic is a safety company, and you learn about safety by watching how people actually use your tools. It launched as a research preview in February 2025, went GA in May, and crossed **$1 billion in ARR by December**.
+Boris runs **5 Claude Code instances** in numbered iTerm2 tabs, each in a separate git checkout (not branches or worktrees — full checkouts avoid conflicts). On top of those, 5-10 sessions on claude.ai/code, plus mobile sessions from his iPhone.
 
-## The tool that builds itself
+He uses iTerm2 notifications to know when a session finishes or needs input, and `--teleport` to move sessions between local and web.
 
-Here's the thing that makes Claude Code genuinely strange: it's recursive. The product writes itself.
+The mindset shift: *"It's not so much about deep work anymore. It's about how good I am at context switching and jumping across multiple different contexts very quickly."*
 
-Boris has said this in [every interview he's given](https://www.lennysnewsletter.com/): roughly 90% of the codebase was written using Claude Code. Mike Krieger, Anthropic's head of product, put it even more bluntly at the Cisco AI Summit: *"For most products at Anthropic it's effectively 100% just Claude writing, and then what we've done is created all the right scaffolds around it to let us trust it."*
+**How to apply this:** Start with 2-3 parallel sessions on separate tasks. Use separate git checkouts, not branches. Set up terminal notifications so you're not watching paint dry.
 
-The tech stack was chosen to make this loop work. **TypeScript, React with Ink, Yoga, and Bun** — all technologies Claude already knows well. "We wanted a tech stack which we didn't need to teach," Boris explained. "One where Claude Code could build itself."
+## Use the right model and know when to quit
 
-The architectural philosophy is radical simplicity: a thin shell on top of the model with as little business logic as possible. And with every new model release, the team *deletes code*. When Sonnet 4.5 shipped, Boris cut 2,000 tokens from the system prompt. The model just didn't need the hand-holding anymore.
+Boris runs **Opus 4.5 with extended thinking**. His logic: you steer it less, so it's faster end-to-end than a cheaper model — even if each token costs more.
 
-Anthropic calls their internal dogfooding practice **"antfooding"** (employees go by "ants"). Around 70-80% of technical staff use Claude Code daily, and the internal feedback channel gets a message every five minutes. Engineers build what they need for themselves, then ship it to the world.
+He abandons **10-20% of sessions** that go sideways. Starting fresh beats fighting a bad trajectory.
 
-## Running 15 agents at once
+**How to apply this:** Use the best model you can afford. If a session is spiralling after 2-3 corrections, kill it and start over with a cleaner prompt. Don't throw good tokens after bad.
 
-Boris's workflow — which he shared in [a viral X thread](https://x.com/bcherny) that hit 8 million views and 103,000 bookmarks — is built around massive parallelism.
+## Build slash commands for everything you repeat
 
-He runs 5 Claude Code instances in iTerm2 tabs, each in a separate git checkout. On top of that, 5-10 more sessions on claude.ai/code. Plus the odd mobile session kicked off from his iPhone. iTerm2 notifications ping him when a session finishes or needs input, and the `--teleport` flag lets him move sessions between local and web.
+The Claude Code team's most-used commands:
 
-The core loop is surprisingly consistent. He starts **80% of tasks in Plan Mode**, iterating until the plan is solid. Then he flips to auto-accept and lets Claude one-shot the implementation. *"Once there is a good plan, it will one-shot the implementation almost every time,"* he said on [Lenny's Podcast](https://www.lennysnewsletter.com/).
+- **`/commit-push-pr`** — Boris runs this dozens of times a day
+- **`/feature-dev`** — asks questions, writes a spec, creates a plan, builds a todo list, executes step-by-step
+- **`/code-review`** — spawns subagents for first-pass review, then **five adversarial subagents** that poke holes in the findings to kill false positives
+- **`/simplify`** — parallel agents checking code quality, efficiency, and CLAUDE.md compliance
 
-The numbers are wild: **10-30 PRs a day**. In one 30-day stretch, he shipped 259 PRs — 497 commits, ~40,000 lines added, ~38,000 removed, burning through 325 million tokens across 1,600 sessions.
+**How to apply this:** Look at what you do repeatedly and turn it into a slash command. Start with your git workflow — a `/ship` command that formats, commits, and opens a PR will pay for itself on day one.
 
-His model of choice? **Opus 4.5 with extended thinking.** His logic: "Since you have to steer it less and it's better at tool use, it is almost always faster than using a smaller model in the end." He abandons 10-20% of sessions that go sideways — starting fresh beats fighting a bad trajectory.
+## Let hooks close the loop
 
-The mindset shift is the quiet part: *"It's not so much about deep work anymore. It's about how good I am at context switching and jumping across multiple different contexts very quickly."*
+The team uses a **PostToolUse hook** that runs `bun run format || true` after every code edit. Stop hooks run tests and send Claude back to fix failures automatically.
 
-## The automation stack
+**How to apply this:** Add a format-on-edit hook. Then add a test hook. Now Claude formats its own code and fixes its own test failures without you touching anything.
 
-The team's custom tooling lives in the repo and is shared across everyone. Some of the slash commands they've built:
+## Treat CLAUDE.md as your team's memory
 
-- **`/commit-push-pr`** — Boris uses this dozens of times a day
-- **`/feature-dev`** — walks through questions, spec, plan, todo list, then executes
-- **`/code-review`** — the clever one. It spawns subagents for first-pass review (style, history, bugs), then **five more adversarial subagents** that poke holes in the original findings to kill false positives
-- **`/simplify`** — parallel agents checking quality, efficiency, and CLAUDE.md compliance
-- **`/batch`** — migration planning executed by dozens of parallel agents in worktrees
+The team's shared CLAUDE.md is ~2,500 tokens, updated multiple times a week. It has build commands, coding conventions, architecture notes, and common pitfalls.
 
-Boris built the ancestor of the code review system at Meta, where he logged every repeated review comment in a spreadsheet and turned patterns with 3-4 occurrences into lint rules. Same instinct, wildly different execution.
+The rule: **when Claude does something wrong, add it to CLAUDE.md so it doesn't happen again.** After correcting Claude, tell it: *"Update your CLAUDE.md so you don't make that mistake again."* Boris says Claude is "eerily good at writing rules for itself."
 
-**Hooks** handle the deterministic stuff. A PostToolUse hook runs `bun run format || true` after every edit, catching formatting issues before CI does. Stop hooks run tests and send Claude back to fix failures automatically — closed-loop, self-healing development.
+**How to apply this:** Start a CLAUDE.md today. After every correction, add a rule. Keep it under 200 lines. Review it weekly. This compounds — within a month, Claude will make dramatically fewer mistakes in your codebase.
 
-They connect Claude Code to **Slack, BigQuery, and Sentry** via MCP, all configured in a shared `.mcp.json`. The Data Infrastructure team uses MCP servers for BigQuery instead of direct CLI access — security control over sensitive data without losing the AI workflow.
+## Connect Claude to your tools
 
-## CLAUDE.md as institutional memory
+The team wires Claude Code into **Slack, BigQuery, and Sentry** via MCP servers, all in a shared `.mcp.json` committed to the repo.
 
-The team's shared CLAUDE.md is about 2,500 tokens, updated multiple times a week by the whole team. Boris's personal one? "Basically two lines pointing to the team's shared one."
+**How to apply this:** Connect your error tracker and your database. Being able to say "look at the latest Sentry errors and fix the top one" or "query the analytics table and tell me what's wrong" turns Claude from a code writer into an actual collaborator.
 
-It contains build commands, coding conventions (no TypeScript enums — string literal unions only; `bun` not `npm`), architecture notes, and common pitfalls. The rule is dead simple: **when Claude does something wrong, add it to the CLAUDE.md so it doesn't happen again.**
+## The philosophy underneath
 
-They've automated this too. A `@.claude` tag on pull requests via GitHub Actions suggests CLAUDE.md additions — what Boris calls "Compounding Engineering." One of the team's best tricks: after correcting Claude, tell it to *"Update your CLAUDE.md so you don't make that mistake again."* Boris notes that "Claude is eerily good at writing rules for itself."
+Three principles that tie this together:
 
-## What the numbers actually say
+**Build for the model six months from now.** Don't build elaborate workarounds for current limitations. Invest in general scaffolding. Teams that build rigid orchestration workflows "get wiped out with the next model release."
 
-The productivity gains are real, if hard to pin to a single figure.
+**Prototype, don't spec.** PRDs are dead on this team. They build 10-20+ working prototypes before shipping a feature. The subagents feature shipped in three days.
 
-Anthropic's internal study (December 2025) surveyed 132 engineers and analyzed 200,000 Claude Code transcripts. It found a **67% increase in PRs merged per engineer per day** — even as the team doubled in size. Engineers reported using Claude in 59% of their work and estimated a 50% productivity boost.
+**Give Claude a way to verify its own work.** Write tests first. Use the writer/reviewer pattern — one Claude instance writes, a fresh one reviews. This alone 2-3x's the quality of the output.
 
-Boris cites higher numbers in later interviews — **200% per engineer** on Lenny's Podcast, 70% on the Peterman Pod. The gap probably reflects different timeframes and the rapid acceleration through late 2025 as models improved.
+---
 
-The team-level numbers tell the sharper story:
-
-- **Inference team**: research time dropped 80% (1 hour to 10-20 minutes)
-- **Security engineering**: debugging cut from 10-15 minutes to ~5
-- **Growth marketing** (one non-technical person): ad copy from 2 hours to 15 minutes
-- **Product design**: 2-3x faster on visual changes; complex copy changes went from a week of coordination to two 30-minute calls
-
-But the most interesting number? **27% of Claude-assisted work** consists of things that would never have been done otherwise — papercut fixes, experiments, quality improvements that were always deprioritized. AI didn't just make existing work faster. It made new work economically viable.
-
-## Build for the model that doesn't exist yet
-
-A few principles from Boris that have stuck with me.
-
-**"Build for the model six months from now."** This came from his manager Ben Mann, and it became the team's north star. Don't build elaborate workarounds for current model limitations — invest in general-purpose scaffolding. Teams that build rigid orchestration workflows, Boris warns, "get wiped out with the next model release." Rich Sutton's [Bitter Lesson](http://www.incompleteideas.net/IncIdeas/BitterLesson.html), applied to product development.
-
-**Underfund teams on purpose.** Give one great engineer a big problem and unlimited tokens. "With unlimited tokens and intrinsic motivation, one person ships faster because they are forced to let AI do the work." Some Anthropic engineers spend hundreds of thousands of dollars per month on tokens.
-
-**Prototype, don't spec.** PRDs are dead on this team. "The culture is we don't really write stuff, we just... show." They build 10-20+ working prototypes before shipping a major feature. The desktop Cowork app was built by four engineers in 10 days.
-
-**"Coding is largely solved."** Boris said this on Lenny's Podcast in February 2026, and his own trajectory backs it up: Claude Code wrote 20% of his code at launch, 30% by May, and 100% by November. Zero manual edits since. He compares it to the printing press: *"Before Gutenberg, sub-1% of Europe was literate. In 50 years after the press, more material was printed than in the thousand years before."*
-
-And the most practical principle of all: **give Claude a way to verify its own work**, and it will 2-3x the quality of the result. Write the tests first. Use the writer/reviewer pattern — one Claude instance writes, a fresh one reviews without authorship bias. Build the feedback loops. The rest follows.
+*Boris's workflow isn't magic. It's a system: plan before you build, run things in parallel, automate what you repeat, and compound your corrections into CLAUDE.md. The gap between his 259 PRs in a month and your current output isn't talent — it's tooling. Start with one slash command, one hook, and a CLAUDE.md file. The rest follows.*
