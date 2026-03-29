@@ -10,81 +10,91 @@ hero_image = "/images/claude-code-builds-claude-code-hero.png"
 hero_image_alt = "A surreal panoramic landscape with enormous floating orbs above ancient architecture, evoking recursive creation"
 +++
 
-Boris Cherny created Claude Code and hasn't written a line of code by hand since November 2025. He ships 10-30 PRs a day. In one 30-day stretch: 259 PRs, 497 commits, 325 million tokens across 1,600 sessions.
+259 PRs in 30 days. 497 commits. 325 million tokens. Zero lines written by hand.
 
-Here's the workflow behind those numbers, and how to apply it yourself.
+That's not a team. That's Boris Cherny, one person, building Claude Code with Claude Code. I've been studying how he works, and the gap between his output and mine was bothering me. So I pulled apart everything he's shared publicly and tried to figure out what's actually transferable.
+
+Turns out, most of it is.
 
 <!-- more -->
 
-## The core loop: plan first, then let it rip
+## Stop coding. Start planning.
 
-Boris starts **80% of tasks in Plan Mode** (Shift+Tab twice). He iterates on the plan until it's solid, then switches to auto-accept and lets Claude one-shot the implementation.
+This is the one that changed how I work.
+
+Boris starts 80% of his tasks in **Plan Mode** (Shift+Tab twice). He doesn't touch code until the plan is right. Then he flips to auto-accept and lets Claude execute the whole thing in one shot.
 
 > "Once there is a good plan, it will one-shot the implementation almost every time." [Lenny's Podcast](https://www.lennysnewsletter.com/)
 
-That's the entire inner loop. Plan, accept, ship. No hand-editing.
+I used to do the opposite: jump in, start coding, course-correct as I went. That works when you're writing the code yourself. With an AI agent, it's backwards. Every minute you spend refining the plan saves ten minutes of "no, not like that" later.
 
-**How to apply this:** Resist the urge to jump straight into coding. Spend the time upfront getting the plan right. A good plan in Plan Mode is worth more than an hour of back-and-forth corrections.
+Try it on your next task. Open Plan Mode, describe what you want, and don't leave until the plan actually makes sense. The implementation will feel like cheating.
 
-## Run agents in parallel
+## You're not running enough agents
 
-Boris runs **5 Claude Code instances** in numbered iTerm2 tabs, each in a separate git checkout (not branches or worktrees; full checkouts avoid conflicts). On top of those, 5-10 sessions on claude.ai/code, plus mobile sessions from his iPhone.
+Boris runs **5 parallel Claude Code instances** in iTerm2 tabs, each in its own full git checkout. On top of those, 5-10 web sessions on claude.ai/code. Sometimes he starts things from his phone.
 
-He uses iTerm2 notifications to know when a session finishes or needs input, and `--teleport` to move sessions between local and web.
+When I first read this, I thought it was showing off. Then I tried running three sessions in parallel and realised how much time I'd been wasting watching a single agent think. While one agent is implementing a feature, another is writing tests, and a third is fixing that bug you've been ignoring.
 
-The mindset shift: *"It's not so much about deep work anymore. It's about how good I am at context switching and jumping across multiple different contexts very quickly."*
+The key detail: **use separate git checkouts, not branches.** Branches in the same worktree cause conflicts when multiple agents edit files simultaneously. Separate checkouts are clean.
 
-**How to apply this:** Start with 2-3 parallel sessions on separate tasks. Use separate git checkouts, not branches. Set up terminal notifications so you're not watching paint dry.
+Set up terminal notifications so you know when a session finishes or needs input. Boris uses iTerm2's built-in notifications and the `--teleport` flag to bounce sessions between terminal and web.
 
-## Use the right model and know when to quit
+*"It's not so much about deep work anymore. It's about how good I am at context switching."*
 
-Boris runs **Opus 4.5 with extended thinking**. His logic: you steer it less, so it's faster end-to-end than a cheaper model, even if each token costs more.
+That quote felt wrong to me at first. But he's right. The bottleneck isn't thinking deeply about one problem. It's keeping five plates spinning and knowing when each one needs attention.
 
-He abandons **10-20% of sessions** that go sideways. Starting fresh beats fighting a bad trajectory.
+## Kill bad sessions early
 
-**How to apply this:** Use the best model you can afford. If a session is spiralling after 2-3 corrections, kill it and start over with a cleaner prompt. Don't throw good tokens after bad.
+Boris abandons **10-20% of sessions** that go sideways. No sunk cost fallacy, no trying to steer a confused agent back on track. Just kill it and start fresh.
 
-## Build slash commands for everything you repeat
+He also runs **Opus 4.5 with extended thinking**. His reasoning: you steer it less, so it's actually faster than a cheaper model, even though each token costs more. I was sceptical, but after switching, the difference is real. Fewer corrections means fewer wasted rounds.
 
-The Claude Code team's most-used commands:
+If a session is spiralling after 2-3 corrections, stop. Open a new one with a cleaner prompt. Your time is worth more than the tokens.
 
-- **`/commit-push-pr`**: Boris runs this dozens of times a day
-- **`/feature-dev`**: asks questions, writes a spec, creates a plan, builds a todo list, executes step-by-step
-- **`/code-review`**: spawns subagents for first-pass review, then **five adversarial subagents** that poke holes in the findings to kill false positives
-- **`/simplify`**: parallel agents checking code quality, efficiency, and CLAUDE.md compliance
+## Automate everything you do twice
 
-**How to apply this:** Look at what you do repeatedly and turn it into a slash command. Start with your git workflow. A `/ship` command that formats, commits, and opens a PR will pay for itself on day one.
+The Claude Code team has built slash commands for their entire workflow:
 
-## Let hooks close the loop
+- **`/commit-push-pr`**: Boris runs this dozens of times a day. Formats, commits, pushes, opens a PR.
+- **`/feature-dev`**: asks clarifying questions, writes a spec, plans, builds a todo, then executes step by step
+- **`/code-review`**: this one's wild. It spawns subagents for a first-pass review, then **five adversarial subagents** that attack the original findings to kill false positives
+- **`/simplify`**: parallel agents checking quality, efficiency, and CLAUDE.md compliance
 
-The team uses a **PostToolUse hook** that runs `bun run format || true` after every code edit. Stop hooks run tests and send Claude back to fix failures automatically.
+I started with just one: a `/ship` command that formats, commits, and opens a PR. It's embarrassingly simple and I use it constantly. Start there. Add more as patterns emerge.
 
-**How to apply this:** Add a format-on-edit hook. Then add a test hook. Now Claude formats its own code and fixes its own test failures without you touching anything.
+**Hooks** are the other half. The team runs `bun run format || true` as a PostToolUse hook after every edit. Stop hooks run tests and send Claude back to fix its own failures. You set it up once and never think about it again.
 
-## Treat CLAUDE.md as your team's memory
+## Your CLAUDE.md is compounding interest
 
-The team's shared CLAUDE.md is ~2,500 tokens, updated multiple times a week. It has build commands, coding conventions, architecture notes, and common pitfalls.
+This might be the highest-leverage thing Boris's team does, and it's the simplest.
 
-The rule: **when Claude does something wrong, add it to CLAUDE.md so it doesn't happen again.** After correcting Claude, tell it: *"Update your CLAUDE.md so you don't make that mistake again."* Boris says Claude is "eerily good at writing rules for itself."
+Their shared CLAUDE.md is about 2,500 tokens. Build commands, coding conventions, architecture notes, known pitfalls. The whole team updates it multiple times a week.
 
-**How to apply this:** Start a CLAUDE.md today. After every correction, add a rule. Keep it under 200 lines. Review it weekly. This compounds; within a month, Claude will make dramatically fewer mistakes in your codebase.
+The rule: **when Claude does something wrong, add it to CLAUDE.md so it doesn't happen again.** Even better, after correcting Claude, tell it: *"Update your CLAUDE.md so you don't make that mistake again."* Boris says Claude is "eerily good at writing rules for itself."
 
-## Connect Claude to your tools
+I started doing this three weeks ago and the difference is already noticeable. Claude stops making the same mistakes. It remembers your preferences. Each correction makes every future session slightly better. That's compounding interest on your attention.
 
-The team wires Claude Code into **Slack, BigQuery, and Sentry** via MCP servers, all in a shared `.mcp.json` committed to the repo.
+Keep it under 200 lines. Review it weekly. Cut anything that's no longer relevant.
 
-**How to apply this:** Connect your error tracker and your database. Being able to say "look at the latest Sentry errors and fix the top one" or "query the analytics table and tell me what's wrong" turns Claude from a code writer into an actual collaborator.
+## Wire Claude into your actual stack
 
-## The philosophy underneath
+The team connects Claude Code to **Slack, BigQuery, and Sentry** via MCP servers, configured in a shared `.mcp.json` in the repo.
 
-Three principles that tie this together:
+This is where it stops feeling like a code assistant and starts feeling like a colleague. "Look at the latest Sentry errors and fix the top one." "Query the analytics table and tell me what changed." "Check Slack for what the team decided about the API format."
 
-**Build for the model six months from now.** Don't build elaborate workarounds for current limitations. Invest in general scaffolding. Teams that build rigid orchestration workflows "get wiped out with the next model release."
+If you're only using Claude Code to write and edit files, you're leaving most of its value on the table.
 
-**Prototype, don't spec.** PRDs are dead on this team. They build 10-20+ working prototypes before shipping a feature. The subagents feature shipped in three days.
+## The bigger picture
 
-**Give Claude a way to verify its own work.** Write tests first. Use the writer/reviewer pattern: one Claude instance writes, a fresh one reviews. This alone 2-3x's the quality of the output.
+Three principles from Boris that I keep coming back to:
+
+**Build for the model six months from now.** Don't write elaborate workarounds for today's limitations. They'll be irrelevant by the next model release. Keep your scaffolding general.
+
+**Prototype, don't spec.** Boris's team doesn't write PRDs. They build 10-20+ working prototypes before shipping a feature. The subagents feature shipped in three days. If you're still writing documents about what you're going to build, you could have built it twice by now.
+
+**Give Claude a way to check its own work.** Write tests first. Use the writer/reviewer pattern: one Claude instance writes code, a fresh instance reviews it without the authorship bias. This alone 2-3x's output quality.
 
 ---
 
-*Boris's workflow isn't magic. It's a system: plan before you build, run things in parallel, automate what you repeat, and compound your corrections into CLAUDE.md. The gap between his 259 PRs in a month and your current output isn't talent, it's tooling. Start with one slash command, one hook, and a CLAUDE.md file. The rest follows.*
+*I'm not shipping 259 PRs a month yet. But I've gone from watching one agent work to running three in parallel, from hand-editing code to planning and accepting, from repeating the same corrections to compounding them in CLAUDE.md. The gap between where I am and where Boris is isn't talent. It's just layers of automation I haven't built yet. Each one is simple. They stack.*
