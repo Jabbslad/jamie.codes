@@ -8,6 +8,8 @@ tags = ["ai", "software-architecture", "monorepo", "engineering"]
 
 [extra]
 comment = true
+hero_image = "images/heroes/default-hero.svg"
+hero_image_alt = "Surrealist landscape with floating spheres over a parchment desert"
 +++
 
 There's a quiet revolution happening in the engineering departments of the world's largest technology companies. According to recent industry chatter, FAANG-style organisations are actively refactoring their legendary monorepos — those massive, unified codebases that have been the backbone of their engineering culture for over a decade.

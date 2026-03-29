@@ -1,4 +1,4 @@
-theme = "apollo"
+theme = "ampersand"
 taxonomies = [{ name = "tags" }]
 
 # The URL the site will be built for
