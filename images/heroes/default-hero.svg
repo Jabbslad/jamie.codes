@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Sky gradient -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1a4a52"/>
+      <stop offset="40%" stop-color="#1d6068"/>
+      <stop offset="70%" stop-color="#2a7a7a"/>
+      <stop offset="100%" stop-color="#8aaa88"/>
+    </linearGradient>
+
+    <!-- Ground gradient -->
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8c4a0"/>
+      <stop offset="100%" stop-color="#b8b490"/>
+    </linearGradient>
+
+    <!-- Sphere shading -->
+    <radialGradient id="sphere1" cx="0.35" cy="0.3" r="0.6">
+      <stop offset="0%" stop-color="#d8d4b8"/>
+      <stop offset="60%" stop-color="#b0ac90"/>
+      <stop offset="100%" stop-color="#8a8670"/>
+    </radialGradient>
+    <radialGradient id="sphere2" cx="0.35" cy="0.3" r="0.6">
+      <stop offset="0%" stop-color="#ccc8aa"/>
+      <stop offset="60%" stop-color="#a8a488"/>
+      <stop offset="100%" stop-color="#7a7660"/>
+    </radialGradient>
+    <radialGradient id="sphere3" cx="0.4" cy="0.35" r="0.55">
+      <stop offset="0%" stop-color="#e0dcbe"/>
+      <stop offset="50%" stop-color="#c0bc9e"/>
+      <stop offset="100%" stop-color="#908c70"/>
+    </radialGradient>
+
+    <!-- Cloud gradient -->
+    <radialGradient id="cloud" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#d4d0b4" stop-opacity="0.9"/>
+      <stop offset="70%" stop-color="#b8b49a" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#a0a088" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Noise texture filter -->
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" mode="multiply" result="blend"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.08"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" mode="overlay"/>
+    </filter>
+
+    <!-- Subtle vignette -->
+    <radialGradient id="vignette" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0%" stop-color="transparent"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.15)"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="1440" height="400" fill="url(#sky)"/>
+
+  <!-- Distant haze line -->
+  <rect x="0" y="250" width="1440" height="150" fill="url(#ground)"/>
+
+  <!-- Horizon haze -->
+  <ellipse cx="720" cy="260" rx="900" ry="30" fill="#a8a890" opacity="0.3"/>
+  <ellipse cx="600" cy="255" rx="700" ry="20" fill="#b8b4a0" opacity="0.2"/>
+
+  <!-- Cloud bank - left -->
+  <ellipse cx="180" cy="210" rx="150" ry="50" fill="#c0bc9e" opacity="0.5"/>
+  <ellipse cx="220" cy="220" rx="120" ry="45" fill="#c8c4a8" opacity="0.4"/>
+  <ellipse cx="140" cy="225" rx="100" ry="35" fill="#d0ccb0" opacity="0.35"/>
+
+  <!-- Cloud bank - center -->
+  <ellipse cx="680" cy="200" rx="200" ry="55" fill="#bab698" opacity="0.45"/>
+  <ellipse cx="720" cy="215" rx="180" ry="50" fill="#c4c0a2" opacity="0.4"/>
+  <ellipse cx="760" cy="225" rx="140" ry="40" fill="#ccc8aa" opacity="0.35"/>
+
+  <!-- Cloud bank - right -->
+  <ellipse cx="1150" cy="195" rx="170" ry="55" fill="#b8b498" opacity="0.5"/>
+  <ellipse cx="1200" cy="210" rx="150" ry="45" fill="#c0bc9e" opacity="0.4"/>
+  <ellipse cx="1100" cy="220" rx="120" ry="38" fill="#c8c4a6" opacity="0.35"/>
+
+  <!-- Wisps -->
+  <ellipse cx="400" cy="180" rx="80" ry="15" fill="#b0ac90" opacity="0.2"/>
+  <ellipse cx="1000" cy="170" rx="90" ry="12" fill="#b0ac90" opacity="0.15"/>
+  <ellipse cx="300" cy="150" rx="60" ry="10" fill="#a8a488" opacity="0.1"/>
+
+  <!-- Large sphere - right of center -->
+  <circle cx="900" cy="160" r="100" fill="url(#sphere1)"/>
+  <ellipse cx="900" cy="261" rx="70" ry="8" fill="#8a8670" opacity="0.2"/>
+
+  <!-- Large sphere - left -->
+  <circle cx="280" cy="130" r="85" fill="url(#sphere2)"/>
+  <ellipse cx="280" cy="216" rx="55" ry="7" fill="#7a7660" opacity="0.15"/>
+
+  <!-- Medium sphere - far right -->
+  <circle cx="1250" cy="140" r="60" fill="url(#sphere3)"/>
+  <ellipse cx="1250" cy="201" rx="38" ry="5" fill="#8a8670" opacity="0.15"/>
+
+  <!-- Small sphere - upper left -->
+  <circle cx="500" cy="80" r="25" fill="url(#sphere2)"/>
+
+  <!-- Small sphere - upper right -->
+  <circle cx="1050" cy="60" r="18" fill="url(#sphere1)"/>
+
+  <!-- Tiny sphere - center top -->
+  <circle cx="700" cy="50" r="10" fill="url(#sphere3)"/>
+
+  <!-- Tiny sphere - between large ones -->
+  <circle cx="600" cy="120" r="14" fill="url(#sphere2)"/>
+
+  <!-- Tiny distant sphere -->
+  <circle cx="1350" cy="100" r="8" fill="#c0bc9e" opacity="0.6"/>
+  <circle cx="150" cy="70" r="6" fill="#b8b498" opacity="0.5"/>
+
+  <!-- Ground detail - subtle marks -->
+  <line x1="350" y1="310" x2="370" y2="310" stroke="#a09c80" stroke-width="1" opacity="0.3"/>
+  <line x1="800" y1="290" x2="830" y2="290" stroke="#a09c80" stroke-width="1" opacity="0.2"/>
+  <line x1="1100" y1="320" x2="1120" y2="320" stroke="#a09c80" stroke-width="1" opacity="0.3"/>
+
+  <!-- Small figures on ground (stylized) -->
+  <path d="M420 280 L422 268 L418 268 Z" fill="#6a6650" opacity="0.4"/>
+  <path d="M620 285 L622 273 L618 273 Z" fill="#6a6650" opacity="0.35"/>
+  <path d="M1050 275 L1052 263 L1048 263 Z" fill="#6a6650" opacity="0.3"/>
+  <path d="M200 290 L202 280 L198 280 Z" fill="#6a6650" opacity="0.25"/>
+  <path d="M1300 285 L1302 275 L1298 275 Z" fill="#6a6650" opacity="0.25"/>
+
+  <!-- Grain texture overlay -->
+  <rect width="1440" height="400" filter="url(#grain)" opacity="0.4"/>
+
+  <!-- Vignette -->
+  <rect width="1440" height="400" fill="url(#vignette)"/>
+</svg>

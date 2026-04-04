@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="base" content="https:&#x2F;&#x2F;jamie.codes" />
+
+    
+
+    
+
+    
+    
+        <title>
+            
+                Jamie Codes
+            
+        </title>
+        
+            <meta property="og:title"
+                  content="Jamie Codes" />
+        
+    
+
+    
+        
+            <meta property="og:description" content="Musings of a software engineer" />
+        
+    
+
+    
+        
+            <meta name="description" content="Musings of a software engineer" />
+        
+    
+
+    
+
+    
+    <link rel="preload" href="https://jamie.codes/fonts/zed-fonts/ZedTextL-Regular.woff2"
+          as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="https://jamie.codes/fonts/Fraunces/Fraunces-Variable.woff2"
+          as="font" type="font/woff2" crossorigin />
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+        <link rel="stylesheet" type="text/css"
+              href="https://jamie.codes/theme/light.css?h=9ba78ea35268e85542b7" />
+        <link id="darkModeStyle" rel="stylesheet" type="text/css"
+              href="https://jamie.codes/theme/dark.css?h=b0a44a30e58a9217c1a4" />
+    
+
+    
+        <script src="https://jamie.codes/js/themetoggle.js?h=ad961ad191c8564feeb2"></script>
+        
+            <script>
+                setTheme(getSavedTheme());
+            </script>
+        
+    
+
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="https://jamie.codes/main.css?h=e854cb0deabfdd875611" />
+
+    
+
+    <script defer
+                    src="https://jamie.codes/search_index.en.js?h=a892d78d87ec9ac951ad"></script><script defer
+                src="https://jamie.codes/js/searchElasticlunr.min.js?h=3626c0ef99daa745b31e"></script></head>
+
+
+    <body>
+        <div class="site-wrapper">
+            <div class="site-grid">
+                <div class="grid-rails" aria-hidden="true">
+    <div class="grid-rail"></div>
+    <div class="grid-rail"></div>
+    <div class="grid-rail"></div>
+    <div class="grid-rail"></div>
+</div>
+
+
+                <header class="grid-full">
+                    <nav>
+    <div class="left-nav">
+        
+            <a href="https:&#x2F;&#x2F;jamie.codes" class="site-title">Jamie Codes</a>
+        
+
+        <div class="socials">
+            
+                
+            
+            
+                <a rel='me' href="https:&#x2F;&#x2F;twitter.com&#x2F;jabbslad" class="social">
+                    <img alt="twitter" class="social-icon"
+                         src="https://jamie.codes/icons/social/twitter.svg" />
+                </a>
+            
+                <a rel='me' href="https:&#x2F;&#x2F;github.com&#x2F;jabbslad&#x2F;" class="social">
+                    <img alt="github" class="social-icon"
+                         src="https://jamie.codes/icons/social/github.svg" />
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            
+            <a href="https://jamie.codes/posts" class="nav-link">&#x2F;posts</a>
+        
+            
+                <span class="nav-sep">&amp;</span>
+            
+            <a href="https://jamie.codes/tags" class="nav-link">&#x2F;tags</a>
+        
+
+        
+            <button id="search-button"
+                    class="search-button"
+                    title="Search">
+                <img src="https://jamie.codes/icons/search.svg"
+                     alt="Search"
+                     class="search-icon" />
+            </button>
+
+            <div id="searchModal"
+                 class="search-modal js"
+                 role="dialog"
+                 aria-labelledby="modalTitle">
+                <div id="modal-content">
+                    <h1 id="modalTitle" class="page-header">Search</h1>
+                    <div id="searchBar">
+                        <input id="searchInput"
+                               role="combobox"
+                               autocomplete="off"
+                               spellcheck="false"
+                               aria-expanded="false"
+                               aria-controls="results-container"
+                               placeholder="Search..." />
+                        <button id="clear-search" class="clear-button" title="Clear search">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="results-container">
+                        <div id="results-info">
+                            <span id="zero_results" style="display: none;">No results</span>
+                            <span id="one_result" style="display: none;">1 result</span>
+                            <span id="many_results" style="display: none;">$NUMBER results</span>
+                        </div>
+                        <div id="results" role="listbox"></div>
+                    </div>
+                </div>
+            </div>
+        
+
+        
+            <a id="dark-mode-toggle"
+               onclick="toggleTheme(); event.preventDefault();"
+               href="#">
+                <img src="https://jamie.codes/icons/sun.svg" id="sun-icon" alt="Light" />
+                <img src="https://jamie.codes/icons/moon.svg"
+                     id="moon-icon"
+                     style="filter: invert(1)"
+                     alt="Dark" />
+                <img src="https://jamie.codes/icons/auto.svg"
+                     id="auto-icon"
+                     style="filter: invert(1)"
+                     alt="Auto" />
+            </a>
+            <script>
+                updateItemToggleTheme()
+            </script>
+        
+    </div>
+</nav>
+
+                </header>
+
+                
+                
+
+                <div class="grid-content">
+                    
+    
+    
+        <div class="page-header">
+            Entries tagged :: example
+        </div>
+    
+
+    <main class="post-list">
+        
+    <ul>
+            
+    <li class="list-item">
+        <section>
+            <div class="post-header">
+                <time>December 26, 2024</time>
+
+                <div>
+                    <h1 class="title">
+                        <a href="https://jamie.codes/posts/mermaid/">Mermaid Example</a>
+
+                        
+                    </h1>
+
+                    
+                        
+                        <div class="meta">
+                            <div class="description">
+                                
+                                    
+                                
+                            </div>
+
+                            
+                        </div>
+                    
+                </div>
+            </div>
+        </section>
+    </li>
+
+        
+            
+    <li class="list-item">
+        <section>
+            <div class="post-header">
+                <time>June 14, 2024</time>
+
+                <div>
+                    <h1 class="title">
+                        <a href="https://jamie.codes/posts/shortcode/">Shortcode Example</a>
+
+                        
+                    </h1>
+
+                    
+                        
+                        <div class="meta">
+                            <div class="description">
+                                
+                                    
+                                
+                            </div>
+
+                            
+                        </div>
+                    
+                </div>
+            </div>
+        </section>
+    </li>
+
+        
+            
+    <li class="list-item">
+        <section>
+            <div class="post-header">
+                <time>January 06, 2023</time>
+
+                <div>
+                    <h1 class="title">
+                        <a href="https://jamie.codes/posts/math-symbol/">Math Symbol Example</a>
+
+                        
+                    </h1>
+
+                    
+                        
+                        <div class="meta">
+                            <div class="description">
+                                
+                                    
+                                
+                            </div>
+
+                            
+                        </div>
+                    
+                </div>
+            </div>
+        </section>
+    </li>
+
+        
+            
+    <li class="list-item">
+        <section>
+            <div class="post-header">
+                <time>January 01, 2022</time>
+
+                <div>
+                    <h1 class="title">
+                        <a href="https://jamie.codes/posts/markdown/">Markdown Test</a>
+
+                        
+                    </h1>
+
+                    
+                        
+                        <div class="meta">
+                            <div class="description">
+                                
+                                    
+                                
+                            </div>
+
+                            
+                        </div>
+                    
+                </div>
+            </div>
+        </section>
+    </li>
+
+        </ul>
+
+    </main>
+
+
+
+                    
+                        
+                    
+
+                    
+                </div>
+
+                <div class="grid-sidebar">
+                    
+                    
+                </div>
+            </div>
+
+            <footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-brand">
+            <span class="footer-title">Jamie Codes</span>
+            
+                <p class="footer-description">Musings of a software engineer</p>
+            
+        </div>
+
+        <div class="footer-meta">
+            <div class="footer-links">
+                
+                    <a href="https://jamie.codes/posts" class="footer-link">&#x2F;posts</a>
+                
+                    <a href="https://jamie.codes/tags" class="footer-link">&#x2F;tags</a>
+                
+            </div>
+
+            <div class="footer-copy">
+                &copy; 2026 Jamie Codes
+            </div>
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </body>
+
+</html>
