@@ -6,7 +6,7 @@ tags = ["ai", "engineering", "developer-tools", "open-source"]
 
 [extra]
 comment = true
-hero_image = "/images/heroes/default-hero.svg"
+hero_image = "/images/multi-agent-teams-hero.png"
 hero_image_alt = "A team of agents collaborating around a digital task board"
 +++
 
