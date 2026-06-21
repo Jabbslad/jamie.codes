@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" class="dark light">
+
+    <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="base" content="https:&#x2F;&#x2F;jamie.codes" />
+
+    
+
+    
+
+    
+    
+        <title>
+            
+                Loop Engineering: Write the Loop, Not the Prompt
+            
+        </title>
+        
+            <meta property="og:title"
+                  content="Loop Engineering: Write the Loop, Not the Prompt" />
+        
+    
+
+    
+        
+            <meta property="og:description" content="The 2026 shift from prompting an agent to writing the loop it runs inside. What loop engineering is, the building blocks, and the four non-negotiables that make a self-correcting agent loop trustworthy." />
+        
+    
+
+    
+        
+            <meta name="description" content="The 2026 shift from prompting an agent to writing the loop it runs inside. What loop engineering is, the building blocks, and the four non-negotiables that make a self-correcting agent loop trustworthy." />
+        
+    
+
+    
+
+    
+    <link rel="preload" href="https://jamie.codes/fonts/zed-fonts/ZedTextL-Regular.woff2"
+          as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="https://jamie.codes/fonts/Fraunces/Fraunces-Variable.woff2"
+          as="font" type="font/woff2" crossorigin />
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+    
+        <link rel="stylesheet" type="text/css"
+              href="https://jamie.codes/theme/light.css?h=9ba78ea35268e85542b7" />
+        <link id="darkModeStyle" rel="stylesheet" type="text/css"
+              href="https://jamie.codes/theme/dark.css?h=b0a44a30e58a9217c1a4" />
+    
+
+    
+        <script src="https://jamie.codes/js/themetoggle.js?h=ad961ad191c8564feeb2"></script>
+        
+            <script>
+                setTheme(getSavedTheme());
+            </script>
+        
+    
+
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="https://jamie.codes/main.css?h=e854cb0deabfdd875611" />
+
+    
+
+    <script defer
+                    src="https://jamie.codes/search_index.en.js?h=557ac3df62b7fdc85558"></script><script defer
+                src="https://jamie.codes/js/searchElasticlunr.min.js?h=3626c0ef99daa745b31e"></script></head>
+
+
+    <body>
+        <div class="site-wrapper">
+            <div class="site-grid">
+                <div class="grid-rails" aria-hidden="true">
+    <div class="grid-rail"></div>
+    <div class="grid-rail"></div>
+    <div class="grid-rail"></div>
+    <div class="grid-rail"></div>
+</div>
+
+
+                <header class="grid-full">
+                    <nav>
+    <div class="left-nav">
+        
+            <a href="https:&#x2F;&#x2F;jamie.codes" class="site-title">Jamie Codes</a>
+        
+
+        <div class="socials">
+            
+                
+            
+            
+                <a rel='me' href="https:&#x2F;&#x2F;twitter.com&#x2F;jabbslad" class="social">
+                    <img alt="twitter" class="social-icon"
+                         src="https://jamie.codes/icons/social/twitter.svg" />
+                </a>
+            
+                <a rel='me' href="https:&#x2F;&#x2F;github.com&#x2F;jabbslad&#x2F;" class="social">
+                    <img alt="github" class="social-icon"
+                         src="https://jamie.codes/icons/social/github.svg" />
+                </a>
+            
+        </div>
+    </div>
+
+    <div class="right-nav">
+        
+            
+            <a href="https://jamie.codes/posts" class="nav-link">&#x2F;posts</a>
+        
+            
+                <span class="nav-sep">&amp;</span>
+            
+            <a href="https://jamie.codes/tags" class="nav-link">&#x2F;tags</a>
+        
+
+        
+            <button id="search-button"
+                    class="search-button"
+                    title="Search">
+                <img src="https://jamie.codes/icons/search.svg"
+                     alt="Search"
+                     class="search-icon" />
+            </button>
+
+            <div id="searchModal"
+                 class="search-modal js"
+                 role="dialog"
+                 aria-labelledby="modalTitle">
+                <div id="modal-content">
+                    <h1 id="modalTitle" class="page-header">Search</h1>
+                    <div id="searchBar">
+                        <input id="searchInput"
+                               role="combobox"
+                               autocomplete="off"
+                               spellcheck="false"
+                               aria-expanded="false"
+                               aria-controls="results-container"
+                               placeholder="Search..." />
+                        <button id="clear-search" class="clear-button" title="Clear search">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960">
+                                <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="results-container">
+                        <div id="results-info">
+                            <span id="zero_results" style="display: none;">No results</span>
+                            <span id="one_result" style="display: none;">1 result</span>
+                            <span id="many_results" style="display: none;">$NUMBER results</span>
+                        </div>
+                        <div id="results" role="listbox"></div>
+                    </div>
+                </div>
+            </div>
+        
+
+        
+            <a id="dark-mode-toggle"
+               onclick="toggleTheme(); event.preventDefault();"
+               href="#">
+                <img src="https://jamie.codes/icons/sun.svg" id="sun-icon" alt="Light" />
+                <img src="https://jamie.codes/icons/moon.svg"
+                     id="moon-icon"
+                     style="filter: invert(1)"
+                     alt="Dark" />
+                <img src="https://jamie.codes/icons/auto.svg"
+                     id="auto-icon"
+                     style="filter: invert(1)"
+                     alt="Auto" />
+            </a>
+            <script>
+                updateItemToggleTheme()
+            </script>
+        
+    </div>
+</nav>
+
+                </header>
+
+                
+    
+        <div class="hero-banner grid-full">
+            
+                
+                
+                
+                
+                
+                <img src="https:&#x2F;&#x2F;jamie.codes&#x2F;processed_images&#x2F;loop-engineering-hero.9aab5e5e0eb08b56.webp"
+                     srcset="https:&#x2F;&#x2F;jamie.codes&#x2F;processed_images&#x2F;loop-engineering-hero.e0b16549b58ab86e.webp 480w, https:&#x2F;&#x2F;jamie.codes&#x2F;processed_images&#x2F;loop-engineering-hero.6a0e2c1f61b5303b.webp 768w, https:&#x2F;&#x2F;jamie.codes&#x2F;processed_images&#x2F;loop-engineering-hero.9aab5e5e0eb08b56.webp 1440w"
+                     sizes="100vw"
+                     alt="A vast desert plain stretching to a distant horizon beneath a huge, empty sky"
+                     class="hero-image"
+                     fetchpriority="high"
+                     decoding="async" />
+            
+        </div>
+    
+
+
+                <div class="grid-content">
+                    
+    
+    <div class="visible-element-observer-root" data-selector="main article p">
+        <main>
+            <article>
+                <div class="article-header">
+                    
+                        <div class="article-date">
+                            <time>June 21, 2026</time>
+                            
+                        </div>
+                    
+
+                    <h1 class="article-title">Loop Engineering: Write the Loop, Not the Prompt</h1>
+
+                    
+
+                    
+
+                    
+                </div>
+
+                
+
+                <section class="body">
+                    <p>Boris Cherny, who leads Anthropic's Claude Code, said it bluntly at Sequoia's AI Ascent in April 2026: <em>"I don't prompt Claude anymore... my job is to write loops."</em></p>
+<p>A couple of months later, Addy Osmani gave the practice a name. In his June 2026 essay on loop engineering, he described it as the shift from prompting a single agent to designing the harness an agent runs inside, and distilled it to a maxim that has stuck with me: <strong>build the loop, stay the engineer.</strong></p>
+<p>This post is a practical tour of what loop engineering actually is, the pieces it's built from, and the guardrails that stop a self-correcting agent loop from quietly going wrong.</p>
+<span id="continue-reading"></span><h2 id="the-role-shift"><a class="zola-anchor" href="#the-role-shift" aria-label="Anchor link for: the-role-shift">The role shift</a></h2>
+<p>For a couple of years now, the dominant skill in AI-assisted development has been <em>prompting</em>: crafting the perfect instruction, massaging context, nudging the model toward the answer you wanted. Loop engineering argues that the leverage has moved one level up.</p>
+<p>Your code becomes the harness. The LLM becomes a single step inside it. You stop optimising prompts and start designing <strong>gates, splits, and caps</strong>. Anthropic's own docs describe the native agentic loop as <em>gather context, take action, verify results, repeat until done</em>. Loop engineering sharpens that into a deliberate cycle with one non-negotiable property:</p>
+<blockquote>
+<p>A loop is defined as much by its <strong>stop condition</strong> as by its generator. If you cannot write a machine-checkable "done", you do not have a loop. You have a wish.</p>
+</blockquote>
+<p>Everything else in this post is in service of that one idea.</p>
+<h2 id="the-building-blocks"><a class="zola-anchor" href="#the-building-blocks" aria-label="Anchor link for: the-building-blocks">The building blocks</a></h2>
+<p>Osmani names five building blocks that a modern loop sits on, plus external memory as the spine:</p>
+<ul>
+<li><strong>Automations</strong> that trigger the loop on a heartbeat, a CI failure, or a new issue.</li>
+<li><strong>Worktrees</strong> so each agent gets its own isolated working directory and parallel makers never collide.</li>
+<li><strong>Skills</strong> that capture conventions, so an agent inherits your way of doing things instead of guessing every run.</li>
+<li><strong>Connectors and MCP</strong> that give the agent eyes on the outside world: the repo, CI, tickets, telemetry.</li>
+<li><strong>Sub-agents</strong> that fan out specialised work: a researcher that reads, a coder that writes, a reviewer that judges.</li>
+<li><strong>External memory</strong> because the agent forgets, but the repo and the run journal do not.</li>
+</ul>
+<p>You can build all of this on any decent agent harness. I use <a rel="external" href="https://github.com/mariozechner/pi-coding-agent">pi</a> with the <code>pi-workflows</code> extension, where the harness is just a JavaScript file that calls <code>agent()</code>, <code>parallel()</code>, <code>pipeline()</code>, reads <code>args</code>, and is bounded by a token budget and timeout. The ideas are portable; the syntax is not the point.</p>
+<h2 id="the-four-non-negotiables"><a class="zola-anchor" href="#the-four-non-negotiables" aria-label="Anchor link for: the-four-non-negotiables">The four non-negotiables</a></h2>
+<p>This is where most early attempts come unstuck. A loop that retries until something <em>looks</em> done is dangerous. A trustworthy loop needs four things, and they are all first-class concerns you wire deliberately.</p>
+<h3 id="1-a-verifiable-exit-gate"><a class="zola-anchor" href="#1-a-verifiable-exit-gate" aria-label="Anchor link for: 1-a-verifiable-exit-gate">1. A verifiable exit gate</a></h3>
+<p>The loop must end when a real signal says so, not when the agent feels finished. That signal is a command with an exit code: a test suite, a linter, a type checker, a build. The loop converges on <code>green()</code>, where <code>green()</code> is "did the gate pass?".</p>
+<p>If you cannot name the gate command, you are not ready to write the loop. Refuse to ship it without one.</p>
+<h3 id="2-anti-gaming"><a class="zola-anchor" href="#2-anti-gaming" aria-label="Anchor link for: 2-anti-gaming">2. Anti-gaming</a></h3>
+<p>A maker agent left to its own devices will optimise for <em>looking</em> done. It will edit the tests to make them pass. It will special-case the inputs. It will spoof the output. The defence is simple: protect the gate path and abort the loop if anything there changes.</p>
+<pre><code data-lang="js">const clean = async () =&gt; (await agent(
+  `Run exactly: git diff --exit-code -- tests/\nok=true if exit 0 (unchanged).`,
+  { label: &quot;anti-gaming&quot;, schema: BOOL }
+)).ok;
+
+if (!(await clean())) { status = &quot;aborted-anti-gaming&quot;; break; }
+</code></pre>
+<p>The maker is allowed to change the source. It is not allowed to touch the definition of done.</p>
+<h3 id="3-a-maker-checker-split"><a class="zola-anchor" href="#3-a-maker-checker-split" aria-label="Anchor link for: 3-a-maker-checker-split">3. A maker/checker split</a></h3>
+<p>The agent that did the work must not be the one that grades it. Run a <em>different</em> agent, ideally a cheaper model, to judge whether the objective is met. Two fresh context windows keep the verifier honest.</p>
+<p>This is the pattern most often faked. Plenty of "agentic" setups quietly let the maker grade its own homework, then report "tests green" as if it meant something. It doesn't. A self-graded loop is just a confident loop, and confident loops burn money.</p>
+<h3 id="4-an-iteration-cap"><a class="zola-anchor" href="#4-an-iteration-cap" aria-label="Anchor link for: 4-an-iteration-cap">4. An iteration cap</a></h3>
+<p>Every loop needs a brake. A bounded <code>for</code> loop driven by a cap, a token budget check inside each iteration, and a wall-clock timeout. Without all three, an open-ended loop will happily retry, refactor, and spawn sub-agents until a monthly budget vanishes over a weekend.</p>
+<pre><code data-lang="js">const CAP = args.cap ?? 5;
+for (let i = 1; i &lt;= CAP; i++) {
+  if (budget.remaining() &lt; 1000) { status = &quot;budget-exhausted&quot;; break; }
+  if (await green()) { status = `converged-iter-${i}`; break; }
+  await makerStep();           // execute
+  if (!(await clean())) { status = &quot;aborted-anti-gaming&quot;; break; }
+  if (await green()) { status = `converged-iter-${i}`; break; }
+}
+</code></pre>
+<p>Cap the iterations. Watch the budget. Time out the run. None of these are optional.</p>
+<h2 id="memory-is-the-spine"><a class="zola-anchor" href="#memory-is-the-spine" aria-label="Anchor link for: memory-is-the-spine">Memory is the spine</a></h2>
+<p>The reason loops can be trusted across runs is that the agent forgets and the system doesn't. External memory is what carries context from one fire to the next: the run journal, the repository itself, an <code>AGENTS.md</code> that states the conventions, a <code>loop-state.md</code> that records where the last run got to.</p>
+<p>A scheduled loop is stateless by default. Each fire is a fresh agent. For continuity, write what you learned to a file and have the next run read it, or resume from the previous run's journal so the longest unchanged prefix replays instead of re-executing. The model's context window is the most fragile part of the system. Treat it that way.</p>
+<h2 id="the-pitfalls-worth-knowing"><a class="zola-anchor" href="#the-pitfalls-worth-knowing" aria-label="Anchor link for: the-pitfalls-worth-knowing">The pitfalls worth knowing</a></h2>
+<p>The failure modes of loop engineering are now well documented. They all have the same shape: a loop that works just well enough that humans stop watching it.</p>
+<ul>
+<li><strong>Cost runaway</strong>, or "loopmaxxing". Open-ended loops retry and spawn sub-agents until a budget burns. <em>Guardrail:</em> hard iteration cap, token budget check, wall-clock timeout.</li>
+<li><strong>The weak verifier.</strong> The maker marks its own homework. <em>Guardrail:</em> maker/checker split with a different model.</li>
+<li><strong>Gaming the gate.</strong> The maker edits the tests to pass. <em>Guardrail:</em> protected paths and a <code>git diff</code> abort.</li>
+<li><strong>Comprehension debt.</strong> Loop-generated code lands faster than anyone reads it, and the team's mental model of the codebase shrinks while the repo grows. <em>Guardrail:</em> require human review of non-trivial diffs before merge.</li>
+<li><strong>Cognitive surrender.</strong> As loops get reliable <em>enough</em>, humans rubber-stamp the 90% that looks right and absorb the hidden 10% of bugs. <em>Guardrail:</em> rotate reviewers, spot-check by re-deriving the answer, and never auto-merge a converged run.</li>
+</ul>
+<p>That last one is the most important, and it is a human problem rather than a technical one. The better your loop gets, the more disciplined you have to be about staying in it. Osmani's maxim is the whole guardrail: <strong>build the loop, stay the engineer.</strong></p>
+<h2 id="a-note-on-the-gate-itself"><a class="zola-anchor" href="#a-note-on-the-gate-itself" aria-label="Anchor link for: a-note-on-the-gate-itself">A note on the gate itself</a></h2>
+<p>One subtlety worth pulling out: in a sandboxed harness, your "machine-verifiable gate" is often an agent that <em>runs</em> the command and reports a structured <code>{ ok, detail }</code> result, not an exit code you read directly. That is a real trade-off. You mitigate it by pinning the exact command in the gate prompt, using a different model for the verifier, and, once a run converges, re-running the gate yourself from your own shell before you trust the result.</p>
+<p>Trust, but verify. Especially when the thing you are verifying is itself an agent.</p>
+<h2 id="where-this-leaves-us"><a class="zola-anchor" href="#where-this-leaves-us" aria-label="Anchor link for: where-this-leaves-us">Where this leaves us</a></h2>
+<p>Loop engineering is not a framework or a product. It is a posture. You stop asking "what prompt gets the model to do this?" and start asking "what loop would make this routine, verifiable, and safe to leave running?"</p>
+<p>The answer, almost always, is the same four things: a real gate, anti-gaming, a separate checker, and a cap. Get those right and the model becomes one productive step in a cycle you understand. Get them wrong and you have built a very confident way to spend money.</p>
+<p>The desert in the hero image is a decent metaphor. There is a horizon out there, a place the work is supposed to reach. The loop's job is to keep walking. Your job is to know, in code, when you have arrived.</p>
+<hr />
+<p><em>Thanks to Boris Cherny and Addy Osmani for naming and documenting this shift so clearly in public, and to the Anthropic team for publishing the agentic loop as a first-class idea.</em></p>
+
+                </section>
+            </article>
+        </main>
+    </div>
+
+
+
+                    
+                        
+                    
+
+                    
+                        <div class="giscus">
+                        </div>
+                        <script src="https://utteranc.es/client.js" repo="YOUR_NAME/YOUR_REPO" issue-term="pathname" theme="github-light" crossorigin="anonymous" async>
+</script>
+
+                    
+                </div>
+
+                <div class="grid-sidebar">
+                    
+    
+
+                </div>
+            </div>
+
+            <footer class="site-footer">
+    <div class="footer-content">
+        <div class="footer-brand">
+            <span class="footer-title">Jamie Codes</span>
+            
+                <p class="footer-description">Musings of a software engineer</p>
+            
+        </div>
+
+        <div class="footer-meta">
+            <div class="footer-links">
+                
+                    <a href="https://jamie.codes/posts" class="footer-link">&#x2F;posts</a>
+                
+                    <a href="https://jamie.codes/tags" class="footer-link">&#x2F;tags</a>
+                
+            </div>
+
+            <div class="footer-copy">
+                &copy; 2026 Jamie Codes
+            </div>
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </body>
+
+</html>
