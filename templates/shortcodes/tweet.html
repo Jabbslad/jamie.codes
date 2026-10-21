@@ -1,0 +1,15 @@
+{#- Embed a post from X. Renders a plain quote and link without JavaScript;
+    widgets.js upgrades it to a card when it loads.
+    Usage:
+    {% tweet(id="2108394806548566459", user="poteto", name="lauren", date="October 9, 2026") %}
+    post text
+    {% end %}
+-#}
+{%- set user = user | default(value="poteto") -%}
+{%- set name = name | default(value="") -%}
+{%- set url = "https://twitter.com/" ~ user ~ "/status/" ~ id -%}
+<blockquote class="twitter-tweet" data-dnt="true" data-theme="{{ theme | default(value='dark') }}">
+  <p lang="{{ lang | default(value='en') }}" dir="ltr">{{ body | trim | escape | linebreaksbr | safe }}</p>
+  {% if name %}{{ name }} {% endif %}(@{{ user }}) <a href="{{ url | safe }}">{{ date | default(value=url) | safe }}</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
