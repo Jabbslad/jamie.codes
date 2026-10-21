@@ -1,14 +1,16 @@
 +++
-title = "75 merged PRs in a day and a half, and why none of that was the slow part"
+title = "100 merged PRs in two days, and why none of that was the slow part"
 date = 2026-10-21
 draft = false
-description = "How I used Grok Bot and Cursor cloud agents to ship kiln, why getting changes to production still took all day, and what I changed so CI does the reviewing."
+description = "How I used Grok Bot and Cursor cloud agents to ship kiln, why getting changes to production still took all day, and what I changed so CI does the reviewing and the deploying."
 tags = ["ai", "engineering", "developer-tools", "kiln"]
 +++
 
-Between lunchtime on 19 October and 01:43 on 21 October, cloud agents opened 79 pull requests on [kiln](https://github.com/Jabbslad/kiln). 75 of them merged. I didn't write a line of that code, and I didn't review most of it either.
+Between lunchtime on 19 October and 14:45 on 21 October, cloud agents opened 108 pull requests on [kiln](https://github.com/Jabbslad/kiln). 100 of them merged. I didn't write a line of that code, and I didn't review most of it either.
 
-That sounds like the good news. The catch is that it still took me most of 20 October to get one release onto my server, and the reason wasn't the code. This post is about what was slow and what I changed.
+*Updated 21 October, 15:00 Canary time. I first wrote this with data up to 01:43 that morning. The numbers, charts and timeline now run to 14:45, and the section [What happened next](#what-happened-next) covers the 13 hours in between.*
+
+That sounds like the good news. The catch is that it still took me most of 20 October to get one release onto my server, and the reason wasn't the code. This post is about what was slow and what I changed. By the afternoon of 21 October, a merged PR was live on the server about 10 minutes later, and nobody pushed a tag.
 
 Much of this setup follows how [poteto](https://x.com/poteto) (Lauren Tan) works with agents. Most of the good ideas below started as one of her posts, and I've embedded the ones that changed my setup the most.
 
@@ -133,9 +135,9 @@ Proof was a review step on every single PR, which is the part of that pyramid sh
 
 **Chief.** I also set up Chief, a chief-of-staff bot. poteto talks mostly to her chief of staff, who talks to her engineering lead, and I copied that. I talk to Chief, Chief relays to Forge, and the engineering chatter stays out of my main chat.
 
-Here's the pipeline now:
+Here's the pipeline now, including the changes from 21 October that I cover further down:
 
-![The pipeline after the change: CI checks gate auto-merge, and a tag drives the deploy](/images/grok-bot-agents-prs/diagram-after.png)
+![The pipeline now: CI checks gate the merge, and a green push to main releases and deploys](/images/grok-bot-agents-prs/diagram-after.png)
 
 <details>
 <summary>Diagram source</summary>
@@ -146,12 +148,11 @@ flowchart TD
   C --> F[Forge]
   F -->|brief + pstack| CA[Cursor cloud agent]
   CA -->|push| PR[(PR)]
-  PR --> CI[[CI checks<br/>build, tests, docs, pins,<br/>risk flag, version guard]]
-  CI -->|green at head SHA| AM[auto-merge]
+  PR --> CI[[CI checks in cargo xtask<br/>build, tests, docs, pins, Windows,<br/>risk flag, tag path dry run]]
+  CI -->|green at head SHA| AM[merge to main]
   CI -->|red| CA
-  AM --> T[v* release tag]
-  T --> B[build, attest, release]
-  B --> D[deploy job:<br/>install, doctor, smoke box]
+  AM --> T[same run: next patch tag,<br/>build, attest, release]
+  T --> D[deploy job: server, identity, dashboard,<br/>doctor, smoke box, live bundle check]
   D --> H[dark-forge.dev]
 ```
 
@@ -165,17 +166,17 @@ I split the merged PRs into three phases by when they were opened, and measured 
 |---|---|---|---|
 | 19 Oct 12:58 to 20 Oct 02:23 (setup) | 27 | 23 min | 86 min |
 | 20 Oct 09:00 to 22:57 (bot handoffs) | 38 | 20 min | 91 min |
-| 20 Oct 23:00 onward (CI is the reviewer) | 10 | 10 min | 35 min |
+| 20 Oct 23:00 to 21 Oct 14:45 (CI is the reviewer) | 35 | 12 min | 46 min |
 
 ![Median and P90 open-to-merge time by phase](/images/grok-bot-agents-prs/open-to-merge-by-phase.png)
 
-The last phase only has 10 PRs, so I don't want to oversell it. But the median halved and the P90 went from an hour and a half to about half an hour. Releases sped up too. v0.4.12, v0.4.13 and v0.4.14 were published at 22:25, 23:58 and 00:42. Each tag build took between 5 and 7 minutes.
+When I first wrote this, the last phase had 10 PRs, with a median of 10 minutes and a P90 of 35. It now has 35 PRs. The median is 12 minutes, still about half of the earlier phases. The P90 grew to 46 minutes, which is still half of the bot-handoff phase. The two slowest were [#96](https://github.com/Jabbslad/kiln/pull/96) at about four and a half hours, an identity change that needed my yes, and [#78](https://github.com/Jabbslad/kiln/pull/78) at just over four hours, the `cargo xtask` port, which had to take in everything that merged to main while it was open.
 
-Across the whole run, from v0.4.1 on the morning of 19 October to v0.4.15 at 01:51 on 21 October, kiln shipped 14 releases.
+Releases sped up too. v0.4.12, v0.4.13 and v0.4.14 were published at 22:25, 23:58 and 00:42. Each tag build took between 5 and 7 minutes.
 
-The deploy half isn't finished. The v0.4.14 tag build skipped its deploy job, and #81 fixed that path. The v0.4.15 build got all the way to the deploy job and then failed at the "Install the release" step. The plumbing is in place, but the first automatic deploy hasn't gone green yet.
+Across the whole run, from v0.4.1 on the morning of 19 October to v0.4.27 at 14:44 on 21 October, kiln shipped 25 releases. 11 of them came on 21 October.
 
-![Timeline of the two days](/images/grok-bot-agents-prs/diagram-timeline.png)
+![Timeline of the two and a half days](/images/grok-bot-agents-prs/diagram-timeline.png)
 
 <details>
 <summary>Diagram source</summary>
@@ -187,10 +188,34 @@ timeline
   20 Oct day : Standing yes for routine work : v0.4.9 and v0.4.10 ship : 48 PRs merge by midnight
   20 Oct evening : v0.4.11 declared ready about 22.10 : Issue 68 on handoffs : v0.4.12, first signed release : PR 71 posts Proof verdict as a status
   20 Oct late night : Proof dropped, CI is the reviewer : Deploy on a v* tag (PRs 72 to 82) : v0.4.13 and v0.4.14
-  21 Oct early : v0.4.15 tag build reaches the deploy job : it fails at the install step
+  21 Oct night : v0.4.15 deploy fails, no secrets passed (PR 84 fixes it) : 03.55 v0.4.16 tag deploys itself, smoke box passes : PR 78 moves the checks to cargo xtask
+  21 Oct morning : Main red on Windows for 4 hours (PRs 97, 98) : v0.4.18 fails at the stamp step (PR 100 fixes it) : PR 96 upgrades identity on deploy
+  21 Oct midday : PR 102, a green main push releases and deploys : PR 103 checks the live dashboard bundle : v0.4.21 to v0.4.27, no tag pushed by hand
 ```
 
 </details>
+
+## What happened next
+
+When I first published this, the deploy half wasn't finished. The v0.4.14 tag build had skipped its deploy job, and #81 fixed that path. The v0.4.15 build then got all the way to the deploy job and failed at "Install the release".
+
+**The empty key.** The log said the SSH key was empty. The deploy job reads two secrets from the `dark-forge` environment, and it runs as a reusable workflow. GitHub only passes secrets into a reusable workflow when the caller asks it to. The build called the deploy with no `secrets:` key, so the job got empty strings and ran anyway. [#84](https://github.com/Jabbslad/kiln/pull/84) added `secrets: inherit`, plus a CI guard that fails any caller that leaves it out. A manual run of the Deploy workflow at 02:17 put v0.4.15 on the server.
+
+**The first hands-off deploy.** At 03:52 a cloud agent pushed the v0.4.16 tag. The build deployed it, `kiln-runtime doctor` reported `development_ready: true`, and the smoke box booted. The deploy went green at 03:55. That's the run I said I'd write a follow-up about: a tag push to a passing smoke box with nobody touching it. v0.4.17 did the same at 04:44.
+
+**Main went red for four hours.** [#78](https://github.com/Jabbslad/kiln/pull/78) merged at 05:04 and moved the CI checks from Python to `cargo xtask`. The Windows client job on main failed straight away. A release test read a bash script, and on Windows Git checks that script out with CRLF line endings. The parser looked for LF markers, found none, and panicked. The PR had been green because that test only ran on a push to main, never on a pull request. Nothing merged to fix it until the morning. [#97](https://github.com/Jabbslad/kiln/pull/97) fixed the parser at 08:47, and [#98](https://github.com/Jabbslad/kiln/pull/98) fixed the test and made the Windows release tests run on pull requests. Main went green again at 09:05.
+
+**A tag that never shipped.** At 09:24 the v0.4.18 tag build failed while stamping the version onto the binaries it reused from main. There is no v0.4.18 release. [#100](https://github.com/Jabbslad/kiln/pull/100) fixed the stamp and added a dry run of the whole tag path. Pull requests now run that dry run.
+
+**Identity.** [#96](https://github.com/Jabbslad/kiln/pull/96) made the deploy upgrade `kiln-identity`, the sign-in service, alongside the server. It checks the login pages after the install. It touches login, so it was on my list of things that need my yes. The PR records that it got one.
+
+**No more tags.** [#102](https://github.com/Jabbslad/kiln/pull/102) merged at 11:29. A green push to main now creates the next patch tag in the same run, then builds, attests, publishes the release and deploys it. Docs-only pushes don't release. Since then kiln has shipped seven releases, v0.4.21 to v0.4.27. Each one went from merge to a green deploy in about 9 to 10 minutes. #102 set a budget of five minutes from CI going green to the deploy finishing, and all seven came in under it. On 20 October, v0.4.11 took about two and a half hours from published to working.
+
+**Green didn't mean live.** v0.4.20 shipped a new dashboard, but the deploy never installed it. The server kept serving the old bundle and the job still went green. [#103](https://github.com/Jabbslad/kiln/pull/103) installs the dashboard on every deploy. It then fails the job if the live site serves a different bundle from the one in the release.
+
+**Green didn't mean it worked.** [#107](https://github.com/Jabbslad/kiln/pull/107) put copyable `kiln ssh` commands in the dashboard's Access panel. It passed every check, merged at 13:57 and was live in v0.4.25 at 14:07. But from a laptop, `kiln ssh` goes through the public door, and the public door doesn't serve SSH. [#109](https://github.com/Jabbslad/kiln/pull/109) reverted it at 14:18, and v0.4.26 was live at 14:28. Shipping the fix took the same 10 minutes as shipping the mistake. No check caught it, because no check runs `kiln ssh` from outside the host.
+
+On 21 October, up to 14:45, 32 PRs merged and 11 releases shipped. Every one of those releases deployed from CI and passed its smoke box.
 
 ## What I learned
 
@@ -200,12 +225,14 @@ Every one of those waits was a check that lived in a bot's head. Proof knew how 
 
 So my rule now is simple. If a bot checks something by hand, that check should be a CI job.
 
+21 October added three things to that rule. A check that only runs after merge doesn't protect main, so the Windows tests now run on pull requests too. A deploy has to check what's actually live, not just that its own steps finished. And CI only checks what it can reach. Everything in kiln's CI runs on GitHub's runners or on the host. The SSH mistake only shows up from a laptop on the outside.
+
 ## What's next
 
-- Get the tag-triggered deploy green. The v0.4.15 run tells me exactly which step to fix.
-- Finish #78, which replaces the Python CI checks with `cargo xtask`, so the checks live in the same language as the code they check.
-- Keep moving checks down the pyramid. Every time I catch myself asking a bot "did you test X?", that's a missing CI job.
+When I first wrote this, the list here had two items. Both are done. The deploy went green on its own at 03:55 on 21 October, and #78 merged at 05:04. What's left:
 
-I'll write a follow-up once a tag goes from push to a passing smoke box with nobody touching it.
+- SSH from a laptop. The Access panel says "Not available yet" until the public door serves SSH. When it does, the smoke test should run `kiln ssh` from outside the host.
+- Five PRs are still open. [#89](https://github.com/Jabbslad/kiln/pull/89) touches login, so it waits for my yes. [#110](https://github.com/Jabbslad/kiln/pull/110) proposes dropping Windows from the shipped clients.
+- Keep moving checks down the pyramid. Every time I catch myself asking a bot "did you test X?", that's a missing CI job.
 
 Thanks to poteto for writing so openly about how she works with agents. This setup would look very different without her posts.
