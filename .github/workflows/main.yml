@@ -2,6 +2,37 @@
 on: push
 name: Build and deploy GH Pages
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Install Zola 0.22.1
+        run: |
+          wget -q -O - https://github.com/getzola/zola/releases/download/v0.22.1/zola-v0.22.1-x86_64-unknown-linux-gnu.tar.gz | sudo tar xzf - -C /usr/local/bin
+          zola --version
+      - name: Build
+        run: zola build
+      - name: Install Chrome
+        run: |
+          wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get update
+          sudo apt-get install -y /tmp/chrome.deb
+      - name: Layout check
+        run: |
+          npm install --prefix /tmp puppeteer-core@24.43.1
+          zola serve --interface 127.0.0.1 --port 1111 &
+          i=0
+          while [ "$i" -lt 30 ]; do
+            if curl -sf http://127.0.0.1:1111/ >/dev/null; then
+              break
+            fi
+            i=$((i + 1))
+            sleep 1
+          done
+          themes/ampersand/scripts/check-post-layout.sh http://127.0.0.1:1111/posts/loop-engineering/
   build:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
@@ -13,7 +44,7 @@ jobs:
         with:
           submodules: true
       - name: build_and_deploy
-        uses: shalzz/zola-deploy-action@master
+        uses: shalzz/zola-deploy-action@v0.22.1
         env:
           # Target branch
           PAGES_BRANCH: gh-pages
