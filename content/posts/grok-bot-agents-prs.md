@@ -1,7 +1,7 @@
 +++
 title = "75 merged PRs in a day and a half, and why none of that was the slow part"
 date = 2026-10-21
-draft = true
+draft = false
 description = "How I used Grok Bot and Cursor cloud agents to ship kiln, why getting changes to production still took all day, and what I changed so CI does the reviewing."
 tags = ["ai", "engineering", "developer-tools", "kiln"]
 +++
