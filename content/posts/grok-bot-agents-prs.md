@@ -11,8 +11,6 @@ Over three days, cloud agents opened 149 pull requests on [kiln](https://github.
 
 The writing was never the slow part. What was slow, and what kept going wrong, sat between "merged" and "working on the server". I first wrote this post as a timeline. It kept growing, so I've rewritten it around the principles I took away. Each one comes with the moment that taught it to me.
 
-*Rewritten 22 October 2026. Numbers are as of 11:00 Canary time that day.*
-
 Much of this follows how [poteto](https://x.com/poteto) (Lauren Tan) works with agents. Several of the principles below started as one of her posts, and I've embedded the ones that changed my setup the most.
 
 ## The setup
@@ -28,7 +26,7 @@ I drive it from Grok Bot, a desktop assistant app where I can run several bots s
 
 ## The numbers
 
-As of 11:00 Canary time on 22 October 2026, counting from the first PR at 12:58 on 19 October:
+Counting from the first PR at 12:58 on 19 October:
 
 - **137 merged PRs** on kiln, out of 149 opened.
 - **61 releases** published.
