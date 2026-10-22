@@ -69,7 +69,7 @@ These are the 15 rules the factory runs on. It learnt each one from something th
 
 Agents copy whatever is easiest, so the factory's rules make the easy thing the right thing. A few short rules for every job work better than long instructions per task.
 
-Every brief Forge writes tells the agent to use [pstack](https://github.com/cursor/plugins/tree/main/pstack), the skill pack from Lauren Tan, who posts as [poteto](https://x.com/poteto). Its rules are short: make the smallest diff, fix the root cause, and prove it works. On the first afternoon the agents moved Kiln's installer from Python to bash, added a deploy from GitHub Actions, put the CLI behind sign-in and started serving the dashboard API.
+Every brief Forge writes tells the agent to use [pstack](https://github.com/cursor/plugins/tree/main/pstack), a skill pack written by Lauren Tan, known online as [poteto](https://x.com/poteto). She's a software engineer at xAI who works on Grok Bot and is on the React Compiler core team, after earlier roles at Cursor, Meta and Netflix, and her posts on running engineering through agents shaped much of this factory. pstack's rules are short: make the smallest diff, fix the root cause, and prove it works. On the first afternoon the agents moved Kiln's installer from Python to bash, added a deploy from GitHub Actions, put the CLI behind sign-in and started serving the dashboard API.
 
 #### 2. The slow part is the waiting, so automate every handoff
 
