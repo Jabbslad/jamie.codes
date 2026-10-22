@@ -147,7 +147,37 @@ It isn't finished. If a deploy fails at a check after the install, the new versi
 
 One release never got published, because the signature checker failed to start up on GitHub's side. The tag existed, but the release didn't. The fix retries that exact error three times with a short backoff. Any other verification failure still fails on the first attempt and prints what went wrong.
 
-## 11. Once the machine is fast, the queue and the human are the bottleneck
+## 11. Measure lead time by stage, and give it an owner
+
+**A single total hides the cause. Break the time from open to live into stages, and make one bot responsible for the number.**
+
+![Where the time goes from PR opened to live, by stage](/images/grok-bot-agents-prs/time-by-stage.png)
+
+I measured the 46 PRs merged since a green main started releasing itself. From merge to live takes about 12 minutes at the median, which is fine. The surprise was before the merge. Across those PRs, green PRs sitting unmerged made up about 78% of all the time they spent open. Nobody would have guessed that from the total.
+
+So a measuring job became a bot. Perfy now owns lead time. It keeps the stage breakdown up to date and agrees speed targets with Chief, so the number has someone looking after it instead of being something I check when I'm curious.
+
+## 12. Every speed target comes paired with a quality limit
+
+**A faster pipeline only counts if it isn't breaking more. Every speed target holds only while flake rate, deploy failure rate and change failure rate stay the same or get better.**
+
+Here's where those stand, honestly. Flaky failures are rare, about 0.1% of job runs. Deploy failures are not: about 14% of deploys since releases became automatic failed, mostly at the new checks that run after the install. Roughly one merged PR in six was a fix or revert of something merged in the day before. That last one is a rough measure, because a follow-up isn't always a fix for a failure.
+
+These guardrails get checked every weekday alongside the speed numbers. The habits that keep quality up don't change to make the targets: CI stays the reviewer, and anything a bot checks by hand still becomes a coded check.
+
+## 13. Check the critical path before you count a win
+
+**A step is only worth speeding up if it's on the critical path. Look at what else has to finish before you celebrate.**
+
+Skipping the duplicate test run on main after a merge looked like an easy win, since the tests had already passed on the PR. When I measured it, it saves only a little over a minute at the median. The tests run alongside packaging and signing, and those finish only a little earlier, so the release still waits for them.
+
+## 14. Treat a slowing build as a warning sign
+
+**Build time creeps up one reasonable change at a time. Track it, because nobody notices a slow drift.**
+
+The median PR CI run went from about 2 minutes on the first day to about 10 by the fourth. Every new check was worth adding on its own, and nobody noticed the total until it was measured. A typical PR now goes round CI three or four times before it merges, so that adds up quickly.
+
+## 15. Once the machine is fast, the queue and the human are the bottleneck
 
 **When merge to live takes 11 minutes, the slow part moves to the merge queue and to anything waiting for a person. Decide carefully what really needs a yes.**
 
@@ -157,11 +187,14 @@ The bots have a standing yes for routine PRs, merges, releases and deploys. A sh
 
 That list is now where the time goes. The PR that changed how the dashboard gets its login token touched login, so it waited for me. It took about 24 hours from open to merge, the longest of the lot. The proxy fix above waited for my decision in the morning. The rest of the slow tail is the queue. PRs merge one at a time, and a long PR keeps having to merge main back in while others go first. Three of them took between 12 and 15 hours.
 
+The measurements back this up. Green PRs waiting to merge are about 78% of the time PRs spend open. Risky PRs wait longest: the slowest tenth of them sat green and unmerged for more than nine hours. Several went green in the afternoon and didn't merge until the early hours.
+
 Meanwhile 15 PRs merged overnight with nobody awake. The machine is fine. The next step is a slow lane, where risky PRs wait for main to deploy green before they merge, so routine work doesn't queue behind them.
 
 ## What's next
 
 - **A slow lane** for risky PRs, and a faster CI that skips jobs a change can't affect. Both are open now.
+- **A daily SLO check** on lead time and the quality guardrails, so a slip in either shows up within a day.
 - **Roll back on any failed check,** not only a failed install.
 - **SSH from a laptop.** The public front door now passes the SSH check from outside. The dashboard keeps the commands hidden until a real `kiln ssh` from a laptop works end to end.
 - **Run the deploy's final checks on a throwaway stand-in server** in CI, so a bad check fails there and not on the real one.
