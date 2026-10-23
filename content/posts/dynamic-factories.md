@@ -172,7 +172,7 @@ One release never got published, because the tool that checks its signatures fai
 
 A single total hides the cause. The factory breaks the time from open to live into stages, and one bot is responsible for the number.
 
-When Perfy first measured, it took the 46 PRs merged since every green merge started releasing itself. Merge to live took about 12 minutes at the median, which is fine. The surprise was before the merge. Green PRs waiting to be merged made up about 78% of all the time those PRs spent open. The total would never have shown that. A day later, across 76 PRs, the figure was 71%. The wait is still most of the time.
+When Perfy first measured, it took the 46 PRs merged since every green merge started releasing itself. Merge to live took about 12 minutes at the median, which is fine. The surprise was before the merge. Green PRs waiting to be merged made up about 78% of all the time those PRs spent open. The total would never have shown that. A day later, across 75 PRs, the figure was 71%. The wait is still most of the time.
 
 That measuring job is why Perfy exists. It keeps the stage breakdown current and agrees speed targets with Chief, so someone looks after the number every day rather than when I happen to check.
 
