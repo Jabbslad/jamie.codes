@@ -12,7 +12,7 @@ Agents can already run most of a software factory. They write the code, open the
 
 Over the past few days I watched a factory start making those choices for itself. It added a specialist when it was missing a skill, retired one that had stopped earning its place, and rewrote its own pipeline from what it measured. I've started calling this a Dynamic Factory. I think it's where agentic factories are heading, and this post describes an early working example.
 
-The product it built is [Kiln](https://github.com/Jabbslad/kiln), a self-hosted tool that gives you lightweight Linux virtual machines (VMs) on your own server, ready to SSH into. In four days the factory merged 168 PRs and published 86 releases of it. Kiln is what came off the line. This post is about the line.
+The product it built is [Kiln](https://github.com/Jabbslad/kiln), a self-hosted tool that gives you lightweight Linux virtual machines (VMs) on your own server, ready to SSH into. In four days the factory merged 169 PRs and published 87 releases of it. Kiln is what came off the line. This post is about the line.
 
 ## Agentic software factories, and where they stop
 
@@ -118,7 +118,7 @@ A check that lives in a bot's head runs when the bot gets round to it. A check i
 
 Proof knew to try a change the way a user would. Kiln Ops knew to run the server's health check and start a throwaway VM after each deploy. Forge knew to ask for a new review after a push. All of that is code now. CI checks that only main and release builds can sign a release, that no secret is written straight into a script, and that every downloaded tool is checked against its checksum before it's used. It also refuses a release whose version label doesn't match the version in the code. poteto [reviews the videos and screenshots her agents record](https://x.com/poteto/status/2107529532144234937) rather than reading every diff, so any PR that changes the dashboard or the command-line tool now carries before and after screenshots from a script anyone can rerun.
 
-The guards came from mistakes. Once, a deploy ran without its SSH key. The deploy was a shared workflow that another workflow called, and GitHub only passes secrets on to a shared workflow when the caller asks, so the key arrived empty. The fix came with a CI check that fails any caller that forgets. In the 266 PR builds since the afternoon of 21 October, 91 went red before merge.
+The guards came from mistakes. Once, a deploy ran without its SSH key. The deploy was a shared workflow that another workflow called, and GitHub only passes secrets on to a shared workflow when the caller asks, so the key arrived empty. The fix came with a CI check that fails any caller that forgets. In the 267 PR builds since the afternoon of 21 October, 91 went red before merge.
 
 One test checked that CI refuses a release with the wrong version number. To get one, it downloaded a real old release from GitHub with no timeout, so a slow network could stall CI with no sign of which test was stuck. CI now stops any test that runs too long and names it, and a job that hangs still leaves its full log behind.
 
@@ -172,7 +172,7 @@ One release never got published, because the tool that checks its signatures fai
 
 A single total hides the cause. The factory breaks the time from open to live into stages, and one bot is responsible for the number.
 
-When Perfy first measured, it took the 46 PRs merged since every green merge started releasing itself. Merge to live took about 12 minutes at the median, which is fine. The surprise was before the merge. Green PRs waiting to be merged made up about 78% of all the time those PRs spent open. The total would never have shown that. A day later, across 75 PRs, the figure was 71%. The wait is still most of the time.
+When Perfy first measured, it took the 46 PRs merged since every green merge started releasing itself. Merge to live took about 12 minutes at the median, which is fine. The surprise was before the merge. Green PRs waiting to be merged made up about 78% of all the time those PRs spent open. The total would never have shown that. A day later, across 76 PRs, the figure was 71%. The wait is still most of the time.
 
 That measuring job is why Perfy exists. It keeps the stage breakdown current and agrees speed targets with Chief, so someone looks after the number every day rather than when I happen to check.
 
@@ -226,17 +226,35 @@ On 23 October the loop shipped six releases this way, each live and verified bet
 
 Kiln runs lightweight virtual machines on your own server, using Firecracker, the VM technology behind AWS Lambda. You ask for one and get SSH access, a web dashboard and sign-in, and Kiln's installer handles upgrades and rollbacks. Its output over four days, from the first PR at 12:58 on 19 October to the morning of 23 October, is the best evidence I have that the factory works:
 
-- 168 PRs merged, out of 176 opened.
-- 86 releases went out.
+- 169 PRs merged, out of 178 opened.
+- 87 releases went out.
 - Merge to live takes about 13 minutes at the median, since a green merge started releasing and deploying itself.
 - 15 PRs merged between midnight and 8am on 22 October, with nobody watching.
-- Open-to-merge time fell to a median of 14 minutes once CI became the reviewer, then rose to 85 minutes as the queue and my yeses became the bottleneck.
+- Open-to-merge time fell to a median of 14 minutes once CI became the reviewer, then rose to 77 minutes as the queue and my yeses became the bottleneck.
 
 ![PRs opened and merged per hour on Kiln, with release times marked](/images/grok-bot-agents-prs/prs-per-hour.png)
 
 ![Where the time goes from PR opened to live, by stage](/images/grok-bot-agents-prs/time-by-stage.png)
 
 ![Median and P90 open-to-merge time by phase](/images/grok-bot-agents-prs/open-to-merge-by-phase.png)
+
+## Which way the numbers are heading
+
+Read day by day, several of these numbers are heading the wrong way. Below is what's behind each one and what's being done about it. The last day, 23 October, only runs to late morning.
+
+![Kiln day by day: PRs merged, wait times, CI run time, red builds, fixes and failed deploys](/images/grok-bot-agents-prs/day-by-day.png)
+
+Some held or got better. Merge to live has stayed between 9 and 14 minutes a day since releases became automatic. Green PRs waiting to merge went from 78% of the time PRs spent open to 71%. Flaky failures stayed at about 0.2% of job runs. Fixes and reverts made up 20% and 29% of merged PRs on the first two days, and 10% or less on each day since.
+
+Three got worse.
+
+PR CI time went from about 3 minutes a run on the first two days to about 11 on 23 October. Each check added was worth having, but each one added minutes. Nobody is working on this yet.
+
+Open-to-merge time was under 25 minutes at the median on each of the first three days, then 120 minutes on 22 October and 234 on 23 October. The merge queue and my yeses became the bottleneck. Of the 12 PRs merged on 23 October, 7 were opened the day before and waited between 3 and 18 hours. The 5 opened that day merged in a median of 31 minutes. The chart further up groups PRs by when they were opened, which puts the latest phase at 77 minutes. Grouping by the day they merged gives the higher figures here, because a day's merges include everything that waited overnight. The fix is the slow lane for risky PRs, so routine work stops queuing behind them. Half of it has merged.
+
+About 11% of deploys since releases became automatic failed, 8 out of 70. Day by day that was 5 of 25, then 1 of 33, then 2 of 12, so it jumps about more than it trends. It's still too high. One release per batch comes next, which means fewer deploys and fewer chances to fail. After that, the deploy's final checks move onto a stand-in server in CI.
+
+One number looks bad and isn't. The share of PR builds that went red before merge rose from 9% on the first day to 37% on 22 October, then fell to 17%. A red build before merge is CI catching a problem before it reaches anyone.
 
 ## What it means for engineering leaders
 
