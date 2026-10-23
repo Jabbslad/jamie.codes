@@ -1,0 +1,27 @@
+{
+ "/images/grok-bot-agents-prs/diagram-after.png": {
+  "h": 3106,
+  "src": "/dither/images/grok-bot-agents-prs/diagram-after.png",
+  "w": 1328
+ },
+ "/images/grok-bot-agents-prs/diagram-before.png": {
+  "h": 1868,
+  "src": "/dither/images/grok-bot-agents-prs/diagram-before.png",
+  "w": 1112
+ },
+ "/images/grok-bot-agents-prs/open-to-merge-by-phase.png": {
+  "h": 750,
+  "src": "/dither/images/grok-bot-agents-prs/open-to-merge-by-phase.png",
+  "w": 1500
+ },
+ "/images/grok-bot-agents-prs/prs-per-hour.png": {
+  "h": 720,
+  "src": "/dither/images/grok-bot-agents-prs/prs-per-hour.png",
+  "w": 2550
+ },
+ "/images/grok-bot-agents-prs/time-by-stage.png": {
+  "h": 435,
+  "src": "/dither/images/grok-bot-agents-prs/time-by-stage.png",
+  "w": 1650
+ }
+}

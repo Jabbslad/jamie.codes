@@ -1,0 +1,8 @@
+{% extends "ampersand/templates/page.html" %}
+
+{# Halftone figures (static/dither/): manifest of pre-dithered post images plus the reveal script. #}
+{% block hero %}
+    {{ super() }}
+    <script type="application/json" id="dither-manifest">{{ load_data(path="static/dither/manifest.json") | json_encode() | safe }}</script>
+    <script defer src="{{ get_url(path='dither/dither.js', cachebust=true) | safe }}"></script>
+{% endblock hero %}

@@ -12,9 +12,14 @@ compile_sass = true
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
+[markdown]
+# Markdown images get loading="lazy" and decoding="async" (originals behind the dithered figures load on demand)
+lazy_async_image = true
+
 [extra]
 # Put all your custom variables here
 theme = "toggle"
+stylesheets = ["dither/dither.css"]
 socials = [
     { name = "twitter", url = "https://twitter.com/jabbslad", icon = "twitter" },
     { name = "github", url = "https://github.com/jabbslad/", icon = "github" },
