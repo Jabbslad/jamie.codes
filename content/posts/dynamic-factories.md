@@ -61,7 +61,7 @@ Over the next two days it reshaped itself. Proof's checks moved into CI, and Pro
 
 ## The operating rules
 
-These are the 15 rules the factory runs on. It learnt each one from something that went wrong or took too long while building Kiln, and encoded it into its own checks, roles or targets. I've grouped them by what they govern.
+These are the 16 rules the factory runs on. It learnt each one from something that went wrong or took too long while building Kiln, and encoded it into its own checks, roles or targets. I've grouped them by what they govern.
 
 ### How it's staffed
 
@@ -120,6 +120,8 @@ Proof knew how to drive a change like a user. Kiln Ops knew to run the doctor co
 
 The guards came from mistakes. Once, the deploy ran with an empty SSH key, because GitHub doesn't pass secrets into a reusable workflow unless the caller asks. The fix came with a CI check that fails any caller that forgets. In the 165 PR builds after the afternoon of 21 October, 49 went red before merge.
 
+One test proved that the release check refuses a binary with the wrong version by downloading a real old release from GitHub. The download had no timeout, so a slow network could stall CI with no sign of which test was stuck. CI now stops any test that runs too long and prints its name, and a job that hangs still leaves its full log behind.
+
 #### 5. A check that only runs after merge doesn't protect main
 
 If a test only runs on main, the PR that breaks it will look green.
@@ -151,6 +153,10 @@ At this speed, fixes cause their own problems. The factory keeps each step narro
 A deploy opened so many SSH connections that it hit the server's limit and failed. The fix shared one connection for the whole job. That fix had its own bug. Cleanup ran after the shared connection had closed. The follow-up landed 47 minutes later, with a test that refuses SSH calls once the connection has gone.
 
 Kiln's dashboard now has one typed list of features, each marked available or not yet, and tests fail if an unfinished feature looks broken. The first time the dashboard showed SSH commands, they didn't work from a laptop. The revert took the same 10 minutes from merge to live as the mistake had. The second time, hiding them again was a one-line change that merged 37 minutes after the feature it hid. When the upgrade failed on the journal schema, the installer put the previous version back.
+
+The factory reverts first and fixes second. Two releases went wrong in one night, and each time it shipped a revert straight away and only then worked on the fix. A change to how the server checks sign-in tokens had broken dashboard sign-in. It came back reworked about five hours later, in a release of its own. The other release failed when the deploy's smoke test couldn't create a box, and a failed run had left its box behind under a fixed name, so later deploys clashed with it. Smoke boxes now get unique names and are removed even when the test fails.
+
+An undo is only cheap if the old version is really there. One deploy report listed the same checksum for the sign-in service backup as for the new release. The report turned out to be wrong and the backup was fine, but the check also found that the installer hadn't kept its own copy of one sign-in service version. Rolling back to that version would have relied on the backup folder alone. Before the next sign-in change, the factory now checks that the backup holds the version it expects.
 
 The factory doesn't fully meet this rule yet. If a deploy fails at a check after the install, the new version stays in place even though the deploy shows red. That happened during the metrics failures above.
 
@@ -207,6 +213,14 @@ The bots have a standing yes for routine PRs, merges, releases and deploys. A sh
 That list is where the time goes now. The PR that changed how Kiln's dashboard gets its login token touched login, so it waited for me, and it took about 24 hours from open to merge, the longest of the lot. The proxy fix above waited for my decision in the morning. The rest of the slow tail is the queue. PRs merge one at a time, and a long PR keeps having to merge main back in while others go first. Three PRs took between 12 and 15 hours.
 
 Risky PRs wait longest. The slowest tenth of them sat green and unmerged for more than nine hours, and several went green in the afternoon but didn't merge until the early hours. Meanwhile, 15 PRs merged overnight with nobody awake. The automated stages keep up. The waits are in the queue and with me.
+
+#### 16. Merge in batches, and test each batch like a user
+
+Rule 15 says the queue is the bottleneck. This is how the factory answered it.
+
+GitHub's merge queue isn't available for a personal repo, so the release loop does the batching itself. It takes the PRs that are green and merges them one after another as a cut, aiming for one build, one release and one deploy per cut. Straight after the deploy, coded checks and a swarm of agents use Kiln as a real user would. They create, start, stop and delete real throwaway boxes, sign in, and check that a logged-out request gets refused. The cut only counts as done once that passes. Anything it finds goes back as a fix or a rollback. Risky changes, such as anything touching the sign-in service, go out in a cut of their own.
+
+On 23 October the loop shipped six releases this way, each live and verified between 10 and 22 minutes after its merge. The last cut held two PRs merged back to back, and both were live and verified about 19 minutes after the merge. That cut also shows what's left to do. Each merge still started its own release, so the factory hasn't reached one release per cut yet.
 
 ## What came off the line
 
